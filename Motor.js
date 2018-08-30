@@ -17,12 +17,13 @@ class Motor {
 
     setLength(length) {
         const distance = length - this.length
-        if (distance > 0) {
-            this.reelOut(distance)
-        } else {
-            this.reelIn(Math.abs(distance))
-        }
 	this.length = length;
+
+        if (distance > 0) {
+            return this.reelOut(distance)
+        } else {
+            return this.reelIn(Math.abs(distance))
+        }
     }
 }
 

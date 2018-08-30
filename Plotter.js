@@ -20,14 +20,16 @@ class Plotter
     }
 
     // move relative to the current position
-    move(x, y) {
+    async move(x, y) {
         const absx = this.position.x + x
 	const absy = this.position.y + y
         const leftHypo = Math.hypot(absx, absy)
         const rightHypo = Math.hypot(this.board.width - absx, absy)
 
-        this.leftMotor.setLength(leftHypo)
-        this.rightMotor.setLength(rightHypo)
+        const leftMovement = this.leftMotor.setLength(leftHypo)
+        const rightMovement = this.rightMotor.setLength(rightHypo)
+
+        await Promise.all([leftMovement,rightMovement])
     }
 }
 

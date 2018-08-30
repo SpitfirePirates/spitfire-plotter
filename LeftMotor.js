@@ -16,11 +16,11 @@ class LeftMotor extends Motor {
     }
 
     reelIn(steps) {
-        this.stepper.move(steps)
+        return this.stepper.move(steps)
     }
 
     reelOut(steps) {
-        this.stepper.move(steps * -1)
+        return this.stepper.move(steps * -1)
     }
 }
 
