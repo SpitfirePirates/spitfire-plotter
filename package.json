@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "wpi-stepper": "^0.1.5"
+  }
+}
