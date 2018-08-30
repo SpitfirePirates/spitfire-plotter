@@ -22,6 +22,7 @@ class Motor {
         } else {
             this.reelIn(Math.abs(distance))
         }
+	this.length = length;
     }
 }
 
