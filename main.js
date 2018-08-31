@@ -4,8 +4,12 @@ const Plotter = require('./Plotter.js')
 
 const plotter = new Plotter()
 
-plotter.move(4000, 0);
-// plotter.move(0, 400);
-// plotter.move(-4000, 0);
-// plotter.move(0, -4000);
+async function square() {
+    await plotter.move(5000, 0);
+    await plotter.move(0, 5000);
+    await plotter.move(-5000, 0);
+    await plotter.move(0, -5000);
+}
+
+square();
 
