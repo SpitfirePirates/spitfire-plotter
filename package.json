@@ -1,5 +1,9 @@
 {
-  "devDependencies": {
-    "wpi-stepper": "^0.1.5"
+  "name": "spitfire-plotter",
+  "version": "2.0.0",
+  "main": "main.js",
+  "license": "MIT",
+  "dependencies": {
+    "motor-hat": "^2.0.2"
   }
 }

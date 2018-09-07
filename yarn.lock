@@ -2,22 +2,88 @@
 # yarn lockfile v1
 
 
-lodash@^4.17.2:
+async@^2.5.0:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/async/-/async-2.6.1.tgz#b245a23ca71930044ec53fa46aa00a3e87c6a610"
+  dependencies:
+    lodash "^4.17.10"
+
+bindings@~1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.3.0.tgz#b346f6ecf6a95f5a815c5839fc7cdb22502f1ed7"
+
+debug@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
+  dependencies:
+    ms "2.0.0"
+
+gex@0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/gex/-/gex-0.2.2.tgz#2d409d2430959708da55cf56294c64f6d8973487"
+  dependencies:
+    lodash "3.10.0"
+
+i2c-bus@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/i2c-bus/-/i2c-bus-1.2.5.tgz#65bf78ce6a020d53f6617b13e67196b0ad26449f"
+  dependencies:
+    bindings "~1.3.0"
+    nan "~2.8.0"
+
+jsonic@0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/jsonic/-/jsonic-0.2.2.tgz#127bb99df4d821652c48a23d025cf2b16e618491"
+
+lodash@3.10.0:
+  version "3.10.0"
+  resolved "http://registry.npmjs.org/lodash/-/lodash-3.10.0.tgz#93d51c672828a4416a12af57220ba8a8737e2fbb"
+
+lodash@4.5.0:
+  version "4.5.0"
+  resolved "http://registry.npmjs.org/lodash/-/lodash-4.5.0.tgz#2284aa06f5b136adbd954b903511b62fc39d1f59"
+
+lodash@^4.17.10:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
-nanotimer@^0.3.14:
-  version "0.3.15"
-  resolved "https://registry.yarnpkg.com/nanotimer/-/nanotimer-0.3.15.tgz#280d277db9146eca6f8a570b572abaf2a9acc754"
-
-wiringpi-node@^2.4.4:
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/wiringpi-node/-/wiringpi-node-2.4.4.tgz#210e6eb391b7db8ed27737729ed493501ca06b89"
-
-wpi-stepper@^0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/wpi-stepper/-/wpi-stepper-0.1.5.tgz#6d3dfe4ae4156cd8ee2a3b39b9706cec506b875d"
+motor-hat@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/motor-hat/-/motor-hat-2.0.2.tgz#c92e86b14e6d4a99d73355a171ffb0d4056edacb"
   dependencies:
-    lodash "^4.17.2"
-    nanotimer "^0.3.14"
-    wiringpi-node "^2.4.4"
+    async "^2.5.0"
+    debug "^3.1.0"
+    i2c-bus "^1.2.5"
+    parambulator "^1.5.2"
+    raspi-ver "^1.0.2"
+    sleep "^5.1.0"
+
+ms@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
+
+nan@>=2.5.1:
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.11.0.tgz#574e360e4d954ab16966ec102c0c049fd961a099"
+
+nan@~2.8.0:
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.8.0.tgz#ed715f3fe9de02b57a5e6252d90a96675e1f085a"
+
+parambulator@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/parambulator/-/parambulator-1.5.2.tgz#70cafab14546d1003cc53bde332e2f205c5cf89d"
+  dependencies:
+    gex "0.2.2"
+    jsonic "0.2.2"
+    lodash "4.5.0"
+
+raspi-ver@^1.0.2:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/raspi-ver/-/raspi-ver-1.0.4.tgz#8e139f345cbacc20f204b3a4a87708d186e77b3f"
+
+sleep@^5.1.0:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/sleep/-/sleep-5.2.3.tgz#be8852dd8cf91c8f206d21d681c64754cbceb33c"
+  dependencies:
+    nan ">=2.5.1"
