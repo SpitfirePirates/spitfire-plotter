@@ -23,8 +23,8 @@ function* makeCircleIterator(distance = 100, fraction = 1) {
     return
 }
 
-async function circle(fraction = 1) {
-    const circleIterator = makeCircleIterator(100, fraction)
+async function circle(size = 100, fraction = 1) {
+    const circleIterator = makeCircleIterator(size, fraction)
     for (let [dx, dy] of circleIterator) {
         await plotter.move(dx, dy)
     }
