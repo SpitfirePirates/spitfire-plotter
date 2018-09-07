@@ -17,6 +17,11 @@ class Motor {
         this.steppers[1].setSteps(200)
         this.steppers[1].setStyle('single')
     }
+
+    release() {
+        this.steppers[0].releaseSync()
+        this.steppers[1].releaseSync()
+    }
 }
 
 module.exports = Motor

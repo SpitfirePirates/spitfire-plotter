@@ -5,5 +5,16 @@ const Shapes = require('./Shapes.js')
 
 const plotter = new Plotter()
 
-// Shapes.square();
-Shapes.circle();
+async function run () {
+
+    // shapes.square();
+
+    await Shapes.circle(10, 0.5)
+    await Shapes.circle(10, 0.5)
+    await Shapes.circle(10, 0.5)
+    await Shapes.circle(10, 0.5)
+
+    plotter.release()
+}
+
+run()

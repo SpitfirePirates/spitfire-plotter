@@ -13,7 +13,7 @@ class Plotter
         // const motorDistanceRotations = motorDistance/gearCircumference;
         // const boardWidthSteps = (motorDistanceRotations/motorDistance) * 4076; //steps
 
-        this.board = { width: 13000, height: 40000 }
+        this.board = { width: 1000, height: 1000 }
 
         this.leftMotor = new LeftMotor(0)
         this.rightMotor = new RightMotor(this.board.width)
@@ -60,6 +60,11 @@ class Plotter
         this.position.y = absy
 
         return Promise.all([leftMove,rightMove])
+    }
+
+    release() {
+        this.leftMotor.release()
+        this.rightMotor.release()
     }
 }
 

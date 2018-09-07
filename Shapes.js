@@ -1,17 +1,18 @@
 const Plotter = require('./Plotter.js')
 const plotter = new Plotter()
 
-async function square() {
-    await plotter.move(5000, 0)
-    await plotter.move(0, 5000)
-    await plotter.move(-5000, 0)
-    await plotter.move(0, -5000)
+async function square(length = 1000) {
+    await plotter.move(length, 0)
+    await plotter.move(0, length)
+    await plotter.move(length * -1, 0)
+    await plotter.move(0, length * -1)
 }
 
 function* makeCircleIterator(distance = 100, fraction = 1) {
     let   angle = 0
     const maxAngle = 2 * Math.PI * fraction,
           steps = 100
+    distance = distance * fraction
 
     while (angle < maxAngle) {
         yield [
