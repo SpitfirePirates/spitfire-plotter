@@ -4,19 +4,18 @@ class RightMotor extends Motor {
 
     constructor(length) {
         super(length)
-        this.stepper = this.steppers[1];
+        this.pins = {
+            'direction': 0,
+            'step': 0,
+        }
     }
 
     reelIn(steps) {
-        return new Promise((resolve,reject) => {
-            this.stepper.step('back',steps, resolve)
-        })
+        return this.step('reverse', steps)
     }
 
     reelOut(steps) {
-        return new Promise((resolve,reject) => {
-            this.stepper.step('fwd',steps, resolve)
-        })
+        return this.step('forward', steps);
     }
 }
 
