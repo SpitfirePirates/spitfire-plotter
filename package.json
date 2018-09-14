@@ -4,5 +4,6 @@
   "main": "main.js",
   "license": "MIT",
   "dependencies": {
+    "pigpio": "^1.1.2"
   }
 }

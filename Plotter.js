@@ -13,7 +13,7 @@ class Plotter
         // const motorDistanceRotations = motorDistance/gearCircumference;
         // const boardWidthSteps = (motorDistanceRotations/motorDistance) * 4076; //steps
 
-        this.board = { width: 1000, height: 1000 }
+        this.board = { width: 1030, height: 1000 }
 
         this.leftMotor = new LeftMotor(0)
         this.rightMotor = new RightMotor(this.board.width)
