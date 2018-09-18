@@ -6,12 +6,12 @@ class RightMotor extends Motor {
         super(length, 23, 24)
     }
 
-    reelIn(steps) {
-        return this.step(steps, 'reverse')
+    reelIn(steps, speed) {
+        return this.step(steps, 'reverse', speed)
     }
 
-    reelOut(steps) {
-        return this.step(steps, 'forward');
+    reelOut(steps, speed) {
+        return this.step(steps, 'forward', speed);
     }
 }
 

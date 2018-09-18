@@ -19,15 +19,18 @@ class Motor {
         });
     }
 
-    step(count, direction) {
+    step(count, direction, speed) {
+
+        const minTimePerStep = 20;
+
         return new Promise(async (resolve, reject) => {
             this.pins.direction.digitalWrite(direction === 'forward' ? 0:1)
             for(let steps = 0;steps < count; steps++) {
-                this.pins.step.digitalWrite(1)
-                this.pins.step.digitalWrite(0)
+                this.pins.step.trigger(100,1)
 
                 await new Promise((resolve1, reject1) => {
-                    setTimeout(resolve1,5)
+                    let perStep = minTimePerStep/speed;
+                    setTimeout(resolve1,perStep)
                 })
             }
             resolve();

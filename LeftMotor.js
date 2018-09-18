@@ -6,12 +6,12 @@ class LeftMotor extends Motor {
         super(length, 21, 20)
     }
 
-    reelIn(steps) {
-        return this.step(steps, 'forward')
+    reelIn(steps, speed) {
+        return this.step(steps, 'forward', speed)
     }
 
-    reelOut(steps) {
-        return this.step(steps, 'reverse')
+    reelOut(steps, speed) {
+        return this.step(steps, 'reverse', speed)
     }
 }
 
