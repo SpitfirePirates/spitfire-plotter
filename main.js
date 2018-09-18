@@ -14,6 +14,8 @@ async function run () {
     // await Shapes.circle(10, 0.5)
     // await Shapes.circle(10, 0.5)
     // await Shapes.circle(10, 0.5)
+    
+    //await Walker.walkToCenter()
 
     const points = [
         { x: 100, y: 100},
@@ -22,13 +24,6 @@ async function run () {
         { x: 800, y: 600}
     ]
 
-    await Walker.walkToCenter()
-    await Shapes.circle(10, 1)
-
-    await Walker.walkToCenter()
-    await Shapes.square(100, 1)
-
-    await Walker.walkToCenter()
     await Walker.walk(points)
 
     plotter.release()
