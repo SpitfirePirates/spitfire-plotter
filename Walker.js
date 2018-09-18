@@ -4,8 +4,8 @@ const plotter = new Plotter()
 function* makeWalkIterator(points) {
     for (point of points) {
         yield {
-            x: point.x - plotter.position.x,
-            y: point.y - plotter.position.y
+            dx: point.x - plotter.position.x,
+            dy: point.y - plotter.position.y
         }
     }
     return
@@ -34,7 +34,7 @@ function normalisePoints(points = []) {
         return
     });*/
     const factor = 1;
-    return = points.map(function(point) {
+    return points.map(function(point) {
         return {
             x: point.x * factor,
             y: point.y * factor

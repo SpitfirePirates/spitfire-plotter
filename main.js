@@ -2,6 +2,7 @@
 
 const Plotter = require('./Plotter.js')
 const Shapes = require('./Shapes.js')
+const Walker = require('./Walker.js')
 
 const plotter = new Plotter()
 
@@ -21,8 +22,14 @@ async function run () {
         { x: 800, y: 600}
     ]
 
-    Walker.walkToCenter()
-    Walker.walk(points)
+    await Walker.walkToCenter()
+    await Shapes.circle(10, 1)
+
+    await Walker.walkToCenter()
+    await Shapes.square(100, 1)
+
+    await Walker.walkToCenter()
+    await Walker.walk(points)
 
     plotter.release()
 }
