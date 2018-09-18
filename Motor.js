@@ -1,27 +1,42 @@
-const motorHat = require('motor-hat');
+const gpio = require('pigpio').Gpio
 
 class Motor {
 
-    constructor(length) {
+    constructor(length, pinDirection, pinStep) {
         this.length = length
-        this.stepperController = motorHat({address: 0x60, steppers: [{ W1: 'M1', W2: 'M2' },{ W1: 'M3', W2: 'M4' }]});
-        this.stepperController.init();
+        this.pins = {
+            direction: new gpio(pinDirection, {mode: gpio.OUTPUT}),
+            step: new gpio(pinStep, {mode: gpio.OUTPUT}),
+        }
 
-        this.steppers = this.stepperController.steppers;
-
-        this.steppers[0].setSpeed({'rpm': 60})
-        this.steppers[0].setSteps(200)
-        this.steppers[0].setStyle('single')
-
-        this.steppers[1].setSpeed({'rpm': 60})
-        this.steppers[1].setSteps(200)
-        this.steppers[1].setStyle('single')
     }
 
     release() {
-        this.steppers[0].releaseSync()
-        this.steppers[1].releaseSync()
+        return new Promise((resolve, reject) => {
+            // exec(`release.py`, [this.pins.direction, this.pins.step], (error, stdout, stderr) => {
+            //     error ? reject():resolve()
+            // });
+        });
+    }
+
+    step(count, direction, speed) {
+
+        const minTimePerStep = 20;
+
+        return new Promise(async (resolve, reject) => {
+            this.pins.direction.digitalWrite(direction === 'forward' ? 0:1)
+            for(let steps = 0;steps < count; steps++) {
+                this.pins.step.trigger(100,1)
+
+                await new Promise((resolve1, reject1) => {
+                    let perStep = minTimePerStep/speed;
+                    setTimeout(resolve1,perStep)
+                })
+            }
+            resolve();
+        });
     }
 }
 
 module.exports = Motor
+

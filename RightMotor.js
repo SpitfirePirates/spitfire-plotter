@@ -3,20 +3,15 @@ const Motor = require('./Motor.js')
 class RightMotor extends Motor {
 
     constructor(length) {
-        super(length)
-        this.stepper = this.steppers[1];
+        super(length, 23, 24)
     }
 
-    reelIn(steps) {
-        return new Promise((resolve,reject) => {
-            this.stepper.step('back',steps, resolve)
-        })
+    reelIn(steps, speed) {
+        return this.step(steps, 'reverse', speed)
     }
 
-    reelOut(steps) {
-        return new Promise((resolve,reject) => {
-            this.stepper.step('fwd',steps, resolve)
-        })
+    reelOut(steps, speed) {
+        return this.step(steps, 'forward', speed);
     }
 }
 

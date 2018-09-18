@@ -13,7 +13,7 @@ class Plotter
         // const motorDistanceRotations = motorDistance/gearCircumference;
         // const boardWidthSteps = (motorDistanceRotations/motorDistance) * 4076; //steps
 
-        this.board = { width: 1000, height: 1000 }
+        this.board = { width: 1500, height: 1500 }
 
         this.leftMotor = new LeftMotor(0)
         this.rightMotor = new RightMotor(this.board.width)
@@ -30,27 +30,37 @@ class Plotter
         console.log('hleft', leftHypo)
         console.log('hright', rightHypo)
 
+        let rightLengthDelta = Math.round(Math.abs(rightHypo - this.rightMotor.length));
         let leftLengthDelta = Math.round(Math.abs(leftHypo - this.leftMotor.length));
+
+        let rightMove;
         let leftMove;
+
+        let rightSpeed;
+        let leftSpeed;
+
+        if (rightLengthDelta > leftLengthDelta) {
+            rightSpeed = 1;
+            leftSpeed = leftLengthDelta/rightLengthDelta;
+        } else {
+            leftSpeed = 1;
+            rightSpeed = rightLengthDelta/leftLengthDelta;
+        }
 
         if(leftHypo > this.leftMotor.length) {
             console.log('left out', leftLengthDelta)
-            leftMove = this.leftMotor.reelOut(leftLengthDelta)
+            leftMove = this.leftMotor.reelOut(leftLengthDelta, leftSpeed)
         } else {
             console.log('left in', leftLengthDelta)
-            leftMove = this.leftMotor.reelIn(leftLengthDelta)
+            leftMove = this.leftMotor.reelIn(leftLengthDelta, leftSpeed)
         }
-
-
-        let rightLengthDelta = Math.round(Math.abs(rightHypo - this.rightMotor.length));
-        let rightMove;
 
         if(rightHypo > this.rightMotor.length) {
             console.log('right out', rightLengthDelta)
-            rightMove = this.rightMotor.reelOut(rightLengthDelta)
+            rightMove = this.rightMotor.reelOut(rightLengthDelta, rightSpeed)
         } else {
             console.log('right in', rightLengthDelta)
-            rightMove = this.rightMotor.reelIn(rightLengthDelta)
+            rightMove = this.rightMotor.reelIn(rightLengthDelta, rightSpeed)
         }
 
         this.leftMotor.length = leftHypo
