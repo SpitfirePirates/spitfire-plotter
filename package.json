@@ -4,6 +4,6 @@
   "main": "main.js",
   "license": "MIT",
   "dependencies": {
-    "motor-hat": "^2.0.2"
+    "pigpio": "^1.1.2"
   }
 }
