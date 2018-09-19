@@ -1,4 +1,5 @@
-const gpio = require('pigpio').Gpio
+const debug = (process.argv.indexOf('--debug') !== -1)
+const gpio = debug ? require('pigpio-mock').Gpio : require('pigpio').Gpio
 
 class Motor {
 
