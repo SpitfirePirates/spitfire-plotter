@@ -42,7 +42,28 @@ function normalisePoints(points = []) {
     })
 }
 
+function translatePoints(points, translateX = 0, translateY = 0) {
+    return points.map(function (point) {
+        return {
+            x: point.x + translateX,
+            y: point.y + translateY
+        }
+    })
+}
+
+function arrayToObjects(points) {
+    return points.map(function (point) {
+        return {
+            x: point[0],
+            y: point[1]
+        }
+    });
+}
+
 module.exports = {
     walk: walk,
-    walkToCenter: walkToCenter
+    walkToCenter: walkToCenter,
+    normalisePoints: normalisePoints,
+    translatePoints: translatePoints,
+    arrayToObjects: arrayToObjects
 }
