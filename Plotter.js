@@ -1,5 +1,6 @@
 const LeftMotor  = require('./LeftMotor.js')
 const RightMotor = require('./RightMotor.js')
+const io = require('socket.io')(3000)
 
 class Plotter
 {
@@ -12,6 +13,8 @@ class Plotter
         // const gearCircumference = Math.PI*gearDiameter; //mm
         // const motorDistanceRotations = motorDistance/gearCircumference;
         // const boardWidthSteps = (motorDistanceRotations/motorDistance) * 4076; //steps
+
+        this.debug = (process.argv.indexOf('--debug') !== -1)
 
         this.board = { width: 1500, height: 1500 }
 
@@ -26,9 +29,6 @@ class Plotter
 
         const leftHypo = Math.hypot(absx, absy)
         const rightHypo = Math.hypot(this.board.width - absx, absy)
-
-        console.log('hleft', leftHypo)
-        console.log('hright', rightHypo)
 
         let rightLengthDelta = Math.round(Math.abs(rightHypo - this.rightMotor.length));
         let leftLengthDelta = Math.round(Math.abs(leftHypo - this.leftMotor.length));
@@ -69,12 +69,24 @@ class Plotter
         this.position.x = absx
         this.position.y = absy
 
+        this.onMove(this.position, leftHypo, rightHypo)
+
         return Promise.all([leftMove,rightMove])
     }
 
     release() {
         this.leftMotor.release()
         this.rightMotor.release()
+    }
+
+    onMove(newPosition, leftHypo, rightHypo) {
+        console.log('hleft', leftHypo)
+        console.log('hright', rightHypo)
+        console.log('new pos', newPosition)
+
+        if (this.debug) {
+            io.emit('move', { position: newPosition })
+        }
     }
 }
 

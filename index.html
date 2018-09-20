@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Emulator</title>
+    <style>
+        body {
+            background: #ddd;
+        }
+        canvas {
+            display: block;
+            margin: 50px auto;
+            border: 3px solid #666;
+            width: 750px;
+            height: 500px;
+            background: #fff;
+        }
+        .actions {
+            display: flex;
+            justify-content: center;
+        }
+        .actions > div {
+            padding: 5px;
+            color: #bbb;
+        }
+        .connected.active {
+            color: #3ac11f;
+        }
+        .disconnected.active {
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <canvas width="1500" height="1000"></canvas>
+    <div class="actions">
+        <div class="connected">Connected</div>
+        <div class="disconnected active">Disconnected</div>
+    </div>
+
+    <script src="/node_modules/socket.io-client/dist/socket.io.js"></script>
+    <script>
+        const socket = io('//:3000'),
+                position = { x: 0, y: 0 },
+                stepAmount = 10,
+                ctx = document.querySelector('canvas').getContext('2d')
+
+        ctx.moveTo(position.x, position.y)
+        ctx.lineWidth = 3
+        ctx.strokeStyle = '#3ac11f'
+
+        socket.on('connect', socket => {
+            document.querySelector('.connected').classList.add('active')
+            document.querySelector('.disconnected').classList.remove('active')
+        })
+        socket.on('disconnect', socket => {
+            document.querySelector('.connected').classList.remove('active')
+            document.querySelector('.disconnected').classList.add('active')
+        })
+
+        socket.on('move', data => {
+            console.log("Received position")
+            drawTo(data.position)
+        })
+
+        function drawTo({ x, y }) {
+            ctx.lineTo(x, y)
+            ctx.stroke()
+        }
+    </script>
+</body>
+</html>
