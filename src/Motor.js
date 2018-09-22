@@ -31,6 +31,10 @@ class Motor {
 
                 await new Promise((resolve1, reject1) => {
                     let perStep = minTimePerStep/speed;
+                    if (debug) {
+                        setTimeout(resolve1, 4)
+                        return
+                    }
                     setTimeout(resolve1,perStep)
                 })
             }
