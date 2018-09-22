@@ -1,6 +1,6 @@
 'use strict'
 
-const Plotter = require('./Plotter.js')
+const Plotter = require('./src/Plotter.js')
 
 const plotter = new Plotter()
 
