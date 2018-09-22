@@ -1,8 +1,8 @@
 'use strict'
 
-const Plotter = require('./Plotter.js')
-const Shapes = require('./Shapes.js')
-const Walker = require('./Walker.js')
+const Plotter = require('./src/Plotter.js')
+const Shapes = require('./src/Shapes.js')
+const Walker = require('./src/Walker.js')
 
 const plotter = new Plotter()
 
