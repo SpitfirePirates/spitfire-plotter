@@ -1,20 +1,24 @@
 const LeftMotor  = require('./LeftMotor.js')
 const RightMotor = require('./RightMotor.js')
 const io = require('socket.io')(3000)
+const debug = (process.env.NODE_ENV !== 'production')
 
 class Plotter
 {
 
     constructor() {
         this.position = { x: 0, y: 0 }
+        this.pointsHistory = []
+        io.on('connection', socket => {
+            console.log('sending history', this.pointsHistory)
+            socket.emit('history', this.pointsHistory)
+        })
 
         // const motorDistance = 600; //mm
         // const gearDiameter = 49.81; //mm
         // const gearCircumference = Math.PI*gearDiameter; //mm
         // const motorDistanceRotations = motorDistance/gearCircumference;
         // const boardWidthSteps = (motorDistanceRotations/motorDistance) * 4076; //steps
-
-        this.debug = (process.argv.indexOf('--debug') !== -1)
 
         this.board = { width: 1500, height: 1500 }
 
@@ -84,8 +88,9 @@ class Plotter
         console.log('hright', rightHypo)
         console.log('new pos', newPosition)
 
-        if (this.debug) {
-            io.emit('move', { position: newPosition })
+        if (debug) {
+            this.pointsHistory.push(Object.assign({}, newPosition))
+            io.emit('move', newPosition)
         }
     }
 }

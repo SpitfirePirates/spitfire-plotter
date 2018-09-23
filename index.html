@@ -43,11 +43,21 @@
         const socket = io('//:3000'),
                 position = { x: 0, y: 0 },
                 stepAmount = 10,
-                ctx = document.querySelector('canvas').getContext('2d')
+                mainCanvas = document.querySelector('canvas'),
+                drawCanvas = document.createElement('canvas'),
+                refreshCanvas = document.createElement('canvas'),
+                mainCtx = mainCanvas.getContext('2d'),
+                drawCtx = drawCanvas.getContext('2d'),
+                refreshCtx = refreshCanvas.getContext('2d')
 
-        ctx.moveTo(position.x, position.y)
-        ctx.lineWidth = 3
-        ctx.strokeStyle = '#3ac11f'
+        drawCanvas.width = refreshCanvas.width = mainCanvas.width
+        drawCanvas.height = refreshCanvas.height = mainCanvas.height
+        drawCtx.moveTo(position.x, position.y)
+        drawCtx.lineWidth = 3
+        drawCtx.strokeStyle = '#3ac11f'
+        refreshCtx.strokeStyle = '#aaa'
+        refreshCtx.lineWidth = 3
+        refreshCtx.setLineDash([3, 3])
 
         socket.on('connect', socket => {
             document.querySelector('.connected').classList.add('active')
@@ -58,14 +68,34 @@
             document.querySelector('.disconnected').classList.add('active')
         })
 
-        socket.on('move', data => {
+        socket.on('move', position => {
             console.log("Received position")
-            drawTo(data.position)
+            drawTo(position)
+        })
+
+        socket.on('history', history => {
+            console.log("Received position history")
+            history.forEach(newPosition => {
+                drawTo(newPosition)
+            })
         })
 
         function drawTo({ x, y }) {
-            ctx.lineTo(x, y)
-            ctx.stroke()
+            drawCtx.lineTo(x, y)
+            drawCtx.stroke()
+
+            refreshCtx.clearRect(0, 0, refreshCanvas.width, refreshCanvas.height)
+            refreshCtx.beginPath()
+            refreshCtx.moveTo(0, 0)
+            refreshCtx.lineTo(x, y)
+            refreshCtx.stroke()
+            refreshCtx.moveTo(refreshCanvas.width, 0)
+            refreshCtx.lineTo(x, y)
+            refreshCtx.stroke()
+
+            mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height)
+            mainCtx.drawImage(refreshCanvas, 0, 0)
+            mainCtx.drawImage(drawCanvas, 0, 0)
         }
     </script>
 </body>
