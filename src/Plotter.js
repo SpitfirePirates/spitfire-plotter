@@ -8,6 +8,11 @@ class Plotter
 
     constructor() {
         this.position = { x: 0, y: 0 }
+        this.pointsHistory = []
+        io.on('connection', socket => {
+            console.log('sending history', this.pointsHistory)
+            socket.emit('history', this.pointsHistory)
+        })
 
         // const motorDistance = 600; //mm
         // const gearDiameter = 49.81; //mm
@@ -84,7 +89,8 @@ class Plotter
         console.log('new pos', newPosition)
 
         if (debug) {
-            io.emit('move', { position: newPosition })
+            this.pointsHistory.push(Object.assign({}, newPosition))
+            io.emit('move', newPosition)
         }
     }
 }

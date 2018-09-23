@@ -58,9 +58,16 @@
             document.querySelector('.disconnected').classList.add('active')
         })
 
-        socket.on('move', data => {
+        socket.on('move', position => {
             console.log("Received position")
-            drawTo(data.position)
+            drawTo(position)
+        })
+
+        socket.on('history', history => {
+            console.log("Received position history")
+            history.forEach(newPosition => {
+                drawTo(newPosition)
+            })
         })
 
         function drawTo({ x, y }) {
