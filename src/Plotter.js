@@ -1,7 +1,7 @@
 const LeftMotor  = require('./LeftMotor.js')
 const RightMotor = require('./RightMotor.js')
 const io = require('socket.io')(3000)
-const debug = (process.argv.indexOf('--debug') !== -1)
+const debug = (process.env.NODE_ENV !== 'production')
 
 class Plotter
 {
