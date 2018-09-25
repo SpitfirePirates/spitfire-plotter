@@ -1,6 +1,6 @@
 # Project Plotter
 
-A simple V plotter witten in javascript designed to run on a Raspberry Pi with a pair of 28BYJ-48 stepper motors.
+A simple V plotter written in javascript designed to run on a Raspberry Pi with a pair of stepper motors.
 
 ## Debug no logging
 
