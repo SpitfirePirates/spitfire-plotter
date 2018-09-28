@@ -8,6 +8,14 @@ async function square(length = 1000) {
     await plotter.move(0, length * -1)
 }
 
+async function diamond(length = 1000) {
+    await plotter.move(length/2,0)
+    await plotter.moveInterpolate(length/2, length/2)
+    await plotter.moveInterpolate(-length/2, length/2)
+    await plotter.moveInterpolate(-length/2, -length/2)
+    await plotter.moveInterpolate(length/2, -length/2)
+}
+
 function* makeCircleIterator(distance = 100, fraction = 1) {
     let   angle = 0
     const maxAngle = 2 * Math.PI * fraction,
@@ -33,5 +41,6 @@ async function circle(size = 100, fraction = 1) {
 
 module.exports = {
     square: square,
-    circle: circle
+    circle: circle,
+    diamond: diamond
 }
