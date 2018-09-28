@@ -78,6 +78,14 @@ class Plotter
         return Promise.all([leftMove,rightMove])
     }
 
+    async moveInterpolate(x,y) {
+        const interpolationPrecision = Math.min(Math.abs(x),Math.abs(y))/10;
+
+        for(let i=0;i<=interpolationPrecision;i++) {
+            await this.move(x/interpolationPrecision, y/interpolationPrecision);
+        }
+    }
+
     release() {
         this.leftMotor.release()
         this.rightMotor.release()
