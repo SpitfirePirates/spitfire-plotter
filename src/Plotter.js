@@ -1,5 +1,6 @@
 const LeftMotor  = require('./LeftMotor.js')
 const RightMotor = require('./RightMotor.js')
+const fs = require("fs");
 const io = require('socket.io')(3000)
 const debug = (process.env.NODE_ENV !== 'production')
 
@@ -7,6 +8,10 @@ class Plotter
 {
 
     constructor() {
+        process.on('exit', (code) => {
+            this.writeCurrentPosition();
+        });
+
         this.position = { x: 0, y: 0 }
         this.pointsHistory = []
         io.on('connection', socket => {
@@ -100,6 +105,10 @@ class Plotter
             this.pointsHistory.push(Object.assign({}, newPosition))
             io.emit('move', newPosition)
         }
+    }
+
+    writeCurrentPosition() {
+        fs.writeFileSync('position.json', JSON.stringify(this.position));
     }
 }
 
