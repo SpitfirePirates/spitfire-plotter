@@ -15,7 +15,7 @@ class Plotter
             process.exit();
         });
 
-        this.position = { x: 0, y: 0 }
+        this.position = this.getStoredPosition();
         this.pointsHistory = []
         io.on('connection', socket => {
             console.log('sending history', this.pointsHistory)
@@ -100,6 +100,7 @@ class Plotter
     }
 
     onMove(newPosition, leftHypo, rightHypo) {
+        this.setStoredPosition();
         console.log('hleft', leftHypo)
         console.log('hright', rightHypo)
         console.log('new pos', newPosition)
@@ -112,6 +113,10 @@ class Plotter
 
     setStoredPosition() {
         fs.writeFileSync('position.json', JSON.stringify(this.position));
+    }
+
+    getStoredPosition() {
+        return fs.readFileSync('position.json').toJSON();
     }
 }
 
