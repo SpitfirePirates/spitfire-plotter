@@ -1,5 +1,6 @@
 const LeftMotor  = require('./LeftMotor.js')
 const RightMotor = require('./RightMotor.js')
+const fs = require("fs");
 const io = require('socket.io')(3000)
 const debug = (process.env.NODE_ENV !== 'production')
 
@@ -7,7 +8,13 @@ class Plotter
 {
 
     constructor() {
-        this.position = { x: 0, y: 0 }
+        process.on('exit', (code) => {
+            this.setStoredState();
+        });
+        process.on('SIGINT', _ => {
+            process.exit();
+        });
+
         this.pointsHistory = []
         io.on('connection', socket => {
             console.log('sending history', this.pointsHistory)
@@ -24,6 +31,13 @@ class Plotter
 
         this.leftMotor = new LeftMotor(0)
         this.rightMotor = new RightMotor(this.board.width)
+
+        const restoredState = this.getStoredState();
+        console.log(restoredState);
+
+        this.position = restoredState.position;
+        this.leftMotor.length = restoredState.leftMotor.length;
+        this.rightMotor.length = restoredState.rightMotor.length;
     }
 
     // move relative to the current position
@@ -86,12 +100,17 @@ class Plotter
         }
     }
 
+    async home() {
+        await this.move(-this.position.x, -this.position.y);
+    }
+
     release() {
         this.leftMotor.release()
         this.rightMotor.release()
     }
 
     onMove(newPosition, leftHypo, rightHypo) {
+        this.setStoredState()
         console.log('hleft', leftHypo)
         console.log('hright', rightHypo)
         console.log('new pos', newPosition)
@@ -100,6 +119,43 @@ class Plotter
             this.pointsHistory.push(Object.assign({}, newPosition))
             io.emit('move', newPosition)
         }
+    }
+
+    setStoredState() {
+        const state = {
+            'position': this.position,
+            'leftMotor': {
+                'length': this.leftMotor.length
+            },
+            'rightMotor': {
+                'length': this.rightMotor.length
+            }
+        };
+
+        fs.writeFileSync('state.json', JSON.stringify(state))
+    }
+
+    getStoredState() {
+
+        try {
+            fs.accessSync('state.json', fs.constants.R_OK | fs.constants.W_OK);
+
+            return JSON.parse(fs.readFileSync('state.json'))
+        } catch (err) {
+            return {
+                'position': {
+                    'x': 0,
+                    'y': 0
+                },
+                'leftMotor': {
+                    'length': 0
+                },
+                'rightMotor': {
+                    'length': this.board.width
+                }
+            };
+        }
+
     }
 }
 
