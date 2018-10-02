@@ -9,7 +9,10 @@ class Plotter
 
     constructor() {
         process.on('exit', (code) => {
-            this.writeCurrentPosition();
+            this.setStoredPosition();
+        });
+        process.on('SIGINT', _ => {
+            process.exit();
         });
 
         this.position = { x: 0, y: 0 }
@@ -107,7 +110,7 @@ class Plotter
         }
     }
 
-    writeCurrentPosition() {
+    setStoredPosition() {
         fs.writeFileSync('position.json', JSON.stringify(this.position));
     }
 }
