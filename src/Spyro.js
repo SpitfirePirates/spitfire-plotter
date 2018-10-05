@@ -1,4 +1,4 @@
-const Plotter = require('./Plotter.js')
+const Plotter = require('./Plotter')
 const plotter = new Plotter()
 
 function* makeSpyroIterator(centerPosition, radius) {
@@ -6,16 +6,25 @@ function* makeSpyroIterator(centerPosition, radius) {
         angle2 = 0
 
     while(1) {
-        angle += (Math.PI * 2 / 1000)
-        angle2 += (Math.PI * 2 / 800)
 
-        let position = adjustByCircle(centerPosition, radius, angle)
-        position = adjustByCircle(position, radius / 5, angle2)
+        let dx = 0;
+        let dy = 0;
 
-        yield {
-            dx: position.x - plotter.position.x,
-            dy: position.y - plotter.position.y
+        while(1) {
+
+            angle += (Math.PI * 2 / 1000)
+            angle2 += (Math.PI * 2 / 800)
+
+            let position = adjustByCircle(centerPosition, radius, angle)
+            position = adjustByCircle(position, radius / 5, angle2)
+
+            dx = position.x - plotter.position.x;
+            dy = position.y - plotter.position.y;
+
+            if (Math.hypot(dx, dy) >= 1) break;
         }
+
+        yield {dx: dx, dy: dy}
     }
     return
 }
@@ -28,7 +37,6 @@ async function run(centerPosition, radius) {
 }
 
 function adjustByCircle(center, radius, angle) {
-    console.log('adjust', center, radius, angle)
     return {
         x: center.x + (radius * Math.cos(angle)),
         y: center.y + (radius * Math.sin(angle))
