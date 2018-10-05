@@ -1,13 +1,13 @@
 'use strict'
 
-const Plotter = require('./Plotter.js')
-const Spyro = require('./Spyro.js')
+const Plotter = require('./src/Plotter')
+const Spyro = require('./src/Spyro.js')
 
 const plotter = new Plotter()
 
 async function run () {
 
-    await Spyro.run({x: 500, y: 500}, 200)
+    await Spyro.run({x: plotter.board.width/2, y: plotter.board.height/2}, 200)
 
     plotter.release()
 }
