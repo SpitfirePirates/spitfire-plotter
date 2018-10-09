@@ -21,13 +21,15 @@ class Plotter
             socket.emit('history', this.pointsHistory)
         })
 
+        this.microsteppingMultiplier = 4;
+
         // const motorDistance = 600; //mm
         // const gearDiameter = 49.81; //mm
         // const gearCircumference = Math.PI*gearDiameter; //mm
         // const motorDistanceRotations = motorDistance/gearCircumference;
         // const boardWidthSteps = (motorDistanceRotations/motorDistance) * 4076; //steps
 
-        this.board = { width: 1430, height: 1100 }
+        this.board = { width: 1430*this.microsteppingMultiplier, height: 1100*this.microsteppingMultiplier }
 
         this.leftMotor = new LeftMotor(0)
         this.rightMotor = new RightMotor(this.board.width)
