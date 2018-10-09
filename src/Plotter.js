@@ -27,7 +27,7 @@ class Plotter
         // const motorDistanceRotations = motorDistance/gearCircumference;
         // const boardWidthSteps = (motorDistanceRotations/motorDistance) * 4076; //steps
 
-        this.board = { width: 1430, height: 1300 }
+        this.board = { width: 1430, height: 1100 }
 
         this.leftMotor = new LeftMotor(0)
         this.rightMotor = new RightMotor(this.board.width)
@@ -42,11 +42,15 @@ class Plotter
 
     // move relative to the current position
     move(x, y) {
+
+        x = Math.round(x);
+        y = Math.round(y);
+
         const absx = this.position.x + x
         const absy = this.position.y + y
 
-        const leftHypo = Math.hypot(absx, absy)
-        const rightHypo = Math.hypot(this.board.width - absx, absy)
+        const leftHypo = Math.round(Math.hypot(absx, absy))
+        const rightHypo = Math.round(Math.hypot(this.board.width - absx, absy))
 
         let rightLengthDelta = Math.round(Math.abs(rightHypo - this.rightMotor.length));
         let leftLengthDelta = Math.round(Math.abs(leftHypo - this.leftMotor.length));
