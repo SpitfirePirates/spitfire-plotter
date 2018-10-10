@@ -38,6 +38,8 @@ class Plotter
         this.position = restoredState.position;
         this.leftMotor.length = restoredState.leftMotor.length;
         this.rightMotor.length = restoredState.rightMotor.length;
+
+        this.pointsHistory.push(Object.assign({}, this.position))
     }
 
     // move relative to the current position
