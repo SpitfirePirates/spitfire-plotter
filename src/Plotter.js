@@ -99,9 +99,14 @@ class Plotter
     }
 
     async moveInterpolate(x,y) {
-        const interpolationPrecision = Math.min(Math.abs(x),Math.abs(y))/10;
+        let interpolationPrecision = Math.min(Math.abs(x),Math.abs(y));
+        interpolationPrecision = Math.max(interpolationPrecision,1);
 
-        for(let i=0;i<=interpolationPrecision;i++) {
+        if (interpolationPrecision > 10) {
+            interpolationPrecision /=10;
+        }
+
+        for(let i=0;i<interpolationPrecision;i++) {
             await this.move(x/interpolationPrecision, y/interpolationPrecision);
         }
     }
