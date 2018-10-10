@@ -17,7 +17,6 @@ class Plotter
 
         this.pointsHistory = []
         io.on('connection', socket => {
-            console.log('sending history', this.pointsHistory)
             socket.emit('history', this.pointsHistory)
         })
 
@@ -35,7 +34,6 @@ class Plotter
         this.rightMotor = new RightMotor(this.board.width)
 
         const restoredState = this.getStoredState();
-        console.log(restoredState);
 
         this.position = restoredState.position;
         this.leftMotor.length = restoredState.leftMotor.length;
@@ -72,18 +70,14 @@ class Plotter
         }
 
         if(leftHypo > this.leftMotor.length) {
-            console.log('left out', leftLengthDelta)
             leftMove = this.leftMotor.reelOut(leftLengthDelta, leftSpeed)
         } else {
-            console.log('left in', leftLengthDelta)
             leftMove = this.leftMotor.reelIn(leftLengthDelta, leftSpeed)
         }
 
         if(rightHypo > this.rightMotor.length) {
-            console.log('right out', rightLengthDelta)
             rightMove = this.rightMotor.reelOut(rightLengthDelta, rightSpeed)
         } else {
-            console.log('right in', rightLengthDelta)
             rightMove = this.rightMotor.reelIn(rightLengthDelta, rightSpeed)
         }
 
@@ -122,8 +116,6 @@ class Plotter
 
     onMove(newPosition, leftHypo, rightHypo) {
         this.setStoredState()
-        console.log('hleft', leftHypo)
-        console.log('hright', rightHypo)
         console.log('new pos', newPosition)
 
         if (debug) {
