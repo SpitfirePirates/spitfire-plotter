@@ -32,7 +32,7 @@ function* makeSpyroIterator(centerPosition, radius) {
 async function run(centerPosition, radius) {
     const walkIterator = makeSpyroIterator(centerPosition, radius)
     for (let {dx, dy} of walkIterator) {
-        await plotter.move(dx, dy)
+        await plotter.moveInterpolate(dx, dy)
     }
 }
 
