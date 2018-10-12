@@ -4,12 +4,14 @@
   "main": "main.js",
   "license": "MIT",
   "dependencies": {
-    "pigpio": "^1.1.2",
-    "@rafaelquines/pigpio-mock": "^0.0.2",
     "socket.io": "^2.1.1"
   },
+  "optionalDependencies": {
+    "pigpio": "^1.1.2"
+  },
   "devDependencies": {
-    "local-web-server": "^2.6.0"
+    "local-web-server": "^2.6.0",
+    "@rafaelquines/pigpio-mock": "^0.0.2"
   },
   "scripts": {
     "emulate": "ws"
