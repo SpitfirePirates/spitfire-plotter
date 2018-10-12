@@ -1,5 +1,5 @@
 const debug = (process.env.NODE_ENV !== 'production')
-const gpio = debug ? require('pigpio-mock').Gpio : require('pigpio').Gpio
+const gpio = debug ? require('@rafaelquines/pigpio-mock').Gpio : require('pigpio').Gpio
 
 class Motor {
 

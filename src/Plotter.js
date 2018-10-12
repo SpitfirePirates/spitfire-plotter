@@ -3,6 +3,7 @@ const RightMotor = require('./RightMotor.js')
 const fs = require("fs");
 const io = require('socket.io')(3000)
 const debug = (process.env.NODE_ENV !== 'production')
+const pigpio = debug ? require('@rafaelquines/pigpio-mock') : require('pigpio')
 
 class Plotter
 {
