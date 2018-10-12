@@ -7,9 +7,10 @@ const pigpio = debug ? require('@rafaelquines/pigpio-mock') : require('pigpio')
 
 class Plotter
 {
-
     constructor() {
+        pigpio.initialize();
         process.on('exit', (code) => {
+            pigpio.terminate();
             this.setStoredState();
         });
         process.on('SIGINT', _ => {
