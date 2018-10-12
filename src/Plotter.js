@@ -16,6 +16,7 @@ class Plotter
         });
 
         this.pointsHistory = []
+
         io.on('connection', socket => {
             socket.emit('history', this.pointsHistory)
         })
@@ -117,7 +118,6 @@ class Plotter
     }
 
     onMove(newPosition, leftHypo, rightHypo) {
-        this.setStoredState()
         console.log('new pos', newPosition)
 
         if (debug) {
@@ -137,7 +137,7 @@ class Plotter
             }
         };
 
-        fs.writeFileSync('state.json', JSON.stringify(state))
+        fs.writeFileSync('state.json', JSON.stringify(state));
     }
 
     getStoredState() {
