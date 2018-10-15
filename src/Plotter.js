@@ -4,6 +4,7 @@ const fs = require("fs");
 const io = require('socket.io')(3000)
 const debug = (process.env.NODE_ENV !== 'production')
 const pigpio = debug ? require('@rafaelquines/pigpio-mock') : require('pigpio')
+const OutOfBoundsException = require('./Exceptions/OutOfBoundsException')
 
 class Plotter
 {
@@ -53,6 +54,10 @@ class Plotter
 
         const absx = this.position.x + x
         const absy = this.position.y + y
+
+        if (absx < 0 || absx > this.board.width || absy < 0 || absy > this.board.height) {
+            throw new OutOfBoundsException();
+        }
 
         const leftHypo = Math.round(Math.hypot(absx, absy))
         const rightHypo = Math.round(Math.hypot(this.board.width - absx, absy))
