@@ -41,7 +41,7 @@
     <script src="/node_modules/socket.io-client/dist/socket.io.js"></script>
     <script>
         const socket = io('//:3000'),
-                position = { x: 0, y: 0 },
+                position = null,
                 stepAmount = 10,
                 mainCanvas = document.querySelector('canvas'),
                 drawCanvas = document.createElement('canvas'),
@@ -52,7 +52,6 @@
 
         drawCanvas.width = refreshCanvas.width = mainCanvas.width
         drawCanvas.height = refreshCanvas.height = mainCanvas.height
-        drawCtx.moveTo(position.x, position.y)
         drawCtx.lineWidth = 3
         drawCtx.strokeStyle = '#3ac11f'
         refreshCtx.strokeStyle = '#aaa'
@@ -76,6 +75,11 @@
         socket.on('history', history => {
             console.log("Received position history")
             history.forEach(newPosition => {
+                if (this.position === null) {
+                    this.position = newPosition
+                    drawCtx.moveTo(newPosition.x, newPosition.y)
+                    return
+                }
                 drawTo(newPosition)
             })
         })
