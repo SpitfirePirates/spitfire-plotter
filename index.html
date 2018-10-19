@@ -50,6 +50,8 @@
                 drawCtx = drawCanvas.getContext('2d'),
                 refreshCtx = refreshCanvas.getContext('2d')
 
+        let points = [];
+
         drawCanvas.width = refreshCanvas.width = mainCanvas.width
         drawCanvas.height = refreshCanvas.height = mainCanvas.height
         drawCtx.lineWidth = 3
@@ -68,39 +70,63 @@
         })
 
         socket.on('move', position => {
-            console.log("Received position")
-            drawTo(position)
+            points.push(position);
         })
 
         socket.on('history', history => {
             console.log("Received position history")
-            history.forEach(newPosition => {
-                if (this.position === null) {
-                    this.position = newPosition
-                    drawCtx.moveTo(newPosition.x, newPosition.y)
-                    return
-                }
-                drawTo(newPosition)
-            })
+            points = history
         })
 
-        function drawTo({ x, y }) {
-            drawCtx.lineTo(x, y)
+        function draw({xFrom,yFrom},{xTo,yTo}) {
+            xFrom /= 4;
+            yFrom /= 4;
+            xTo /= 4;
+            yTo /= 4;
+
+            drawCtx.beginPath()
+            drawCtx.moveTo(xFrom, yFrom)
+            drawCtx.lineTo(xTo, yTo)
             drawCtx.stroke()
+            drawCtx.closePath();
 
             refreshCtx.clearRect(0, 0, refreshCanvas.width, refreshCanvas.height)
             refreshCtx.beginPath()
             refreshCtx.moveTo(0, 0)
-            refreshCtx.lineTo(x, y)
+            refreshCtx.lineTo(xTo, yTo)
             refreshCtx.stroke()
             refreshCtx.moveTo(refreshCanvas.width, 0)
-            refreshCtx.lineTo(x, y)
+            refreshCtx.lineTo(xTo, yTo)
             refreshCtx.stroke()
-
-            mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height)
-            mainCtx.drawImage(refreshCanvas, 0, 0)
-            mainCtx.drawImage(drawCanvas, 0, 0)
+            refreshCtx.closePath();
         }
+
+        let lastPoint = null;
+
+        function drawTo() {
+
+            if (points.length > 0) {
+
+                if (lastPoint === null) {
+                    lastPoint = points.shift()
+                }
+
+                points.forEach(point => {
+                    draw(lastPoint, point)
+                    points.shift()
+                    lastPoint = point;
+                })
+
+
+                mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height)
+                mainCtx.drawImage(refreshCanvas, 0, 0)
+                mainCtx.drawImage(drawCanvas, 0, 0)
+            }
+
+            requestAnimationFrame(drawTo)
+        }
+
+        requestAnimationFrame(drawTo)
     </script>
 </body>
 </html>
