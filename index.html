@@ -78,11 +78,12 @@
             points = history
         })
 
-        function draw({xFrom,yFrom},{xTo,yTo}) {
+        function draw({x: xFrom,y: yFrom},{x: xTo,y: yTo}) {
             xFrom /= 4;
             yFrom /= 4;
             xTo /= 4;
             yTo /= 4;
+
 
             drawCtx.beginPath()
             drawCtx.moveTo(xFrom, yFrom)
@@ -106,6 +107,7 @@
         function drawTo() {
 
             if (points.length > 0) {
+                console.log(1)
 
                 if (lastPoint === null) {
                     lastPoint = points.shift()
