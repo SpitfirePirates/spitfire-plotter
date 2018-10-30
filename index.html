@@ -11,8 +11,6 @@
             display: block;
             margin: 50px auto;
             border: 3px solid #666;
-            width: 750px;
-            height: 500px;
             background: #fff;
         }
         .actions {
@@ -32,7 +30,7 @@
     </style>
 </head>
 <body>
-    <canvas width="1500" height="1000"></canvas>
+    <canvas></canvas>
     <div class="actions">
         <div class="connected">Connected</div>
         <div class="disconnected active">Disconnected</div>
@@ -52,14 +50,6 @@
 
         let points = [];
 
-        drawCanvas.width = refreshCanvas.width = mainCanvas.width
-        drawCanvas.height = refreshCanvas.height = mainCanvas.height
-        drawCtx.lineWidth = 3
-        drawCtx.strokeStyle = '#3ac11f'
-        refreshCtx.strokeStyle = '#aaa'
-        refreshCtx.lineWidth = 3
-        refreshCtx.setLineDash([3, 3])
-
         socket.on('connect', socket => {
             document.querySelector('.connected').classList.add('active')
             document.querySelector('.disconnected').classList.remove('active')
@@ -78,12 +68,15 @@
             points = history
         })
 
+        socket.on('init', data => {
+            init(data.board, data.microsteppingMultiplier);
+        })
+
         function draw({x: xFrom,y: yFrom},{x: xTo,y: yTo}) {
             xFrom /= 4;
             yFrom /= 4;
             xTo /= 4;
             yTo /= 4;
-
 
             drawCtx.beginPath()
             drawCtx.moveTo(xFrom, yFrom)
@@ -127,7 +120,26 @@
             requestAnimationFrame(drawTo)
         }
 
-        requestAnimationFrame(drawTo)
+        function init(board, microsteppingMultiplier) {
+
+            drawCanvas.width = board.width/microsteppingMultiplier;
+            drawCanvas.height = board.height/microsteppingMultiplier;
+
+            refreshCanvas.width = board.width/microsteppingMultiplier;
+            refreshCanvas.height = board.height/microsteppingMultiplier;
+
+            mainCanvas.width = board.width/microsteppingMultiplier;
+            mainCanvas.height = board.height/microsteppingMultiplier;
+            
+            drawCtx.lineWidth = 3
+            drawCtx.strokeStyle = '#3ac11f'
+            refreshCtx.strokeStyle = '#aaa'
+            refreshCtx.lineWidth = 3
+            refreshCtx.setLineDash([3, 3])
+
+            requestAnimationFrame(drawTo);
+        }
+
     </script>
 </body>
 </html>

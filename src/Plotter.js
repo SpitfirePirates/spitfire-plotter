@@ -21,6 +21,13 @@ class Plotter
         this.pointsHistory = []
 
         io.on('connection', socket => {
+            socket.emit('init', {
+                board: this.board,
+                microsteppingMultiplier: this.microsteppingMultiplier,
+            })
+        })
+
+        io.on('getHistory', socket => {
             socket.emit('history', this.pointsHistory)
         })
 
