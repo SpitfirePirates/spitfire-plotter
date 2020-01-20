@@ -3,7 +3,7 @@ const Motor = require('./Motor.js')
 class LeftMotor extends Motor {
 
     constructor(length) {
-        super(length, 21, 20)
+        super(length, 26, 19)
     }
 
     reelIn(steps, speed) {
