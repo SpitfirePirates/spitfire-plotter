@@ -27,7 +27,7 @@ async function write(text) {
 }
 
 function textToPoints(text) {
-    const textToSVG = TextToSVG.loadSync();
+    const textToSVG = TextToSVG.loadSync(__dirname + '/../resources/font-ems-delight.ttf');
 
     const attributes = {fill: 'red', stroke: 'black'};
     const options = {x: 0, y: 0, fontSize: 672, anchor: 'top', attributes: attributes};
