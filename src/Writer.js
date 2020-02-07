@@ -4,8 +4,8 @@ const TextToSVG = require('text-to-svg')
 const SVGPathInterpolator = require('svg-path-interpolator')
 const InvalidTextException = require('./Exceptions/InvalidTextException')
 
-function* makeWriteIterator(text) {
-    const points = textToPoints(text)
+function* makeWriteIterator(text, size) {
+    const points = textToPoints(text, size)
     while (points.length > 0) {
         yield {
             dx: points.shift() - plotter.position.x,
@@ -23,7 +23,7 @@ async function write(text, size) {
     if (!size) {
         size = 672
     }
-    const walkIterator = makeWriteIterator(text)
+    const walkIterator = makeWriteIterator(text, size)
     for (let {dx, dy} of walkIterator) {
         await plotter.move(dx, dy)
     }
