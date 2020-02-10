@@ -37,7 +37,7 @@ class Motor {
 
     step(count, direction, speed) {
 
-        const minTimePerStep = 2;
+        const minTimePerStep = 4;
 
         return new Promise(async (resolve, reject) => {
             this.pins.direction.digitalWrite(direction === 'forward' ? 0:1)
