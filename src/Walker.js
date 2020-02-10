@@ -1,7 +1,4 @@
-const Plotter = require('./Plotter.js')
-const plotter = new Plotter()
-
-function* makeWalkIterator(points) {
+function* makeWalkIterator(plotter, points) {
     for (point of points) {
         yield {
             dx: point.x - plotter.position.x,
@@ -11,15 +8,15 @@ function* makeWalkIterator(points) {
     return
 }
 
-async function walk(pPoints = []) {
+async function walk(plotter, pPoints = []) {
     const points = normalisePoints(pPoints)
-    const walkIterator = makeWalkIterator(points)
+    const walkIterator = makeWalkIterator(plotter, points)
     for (let {dx, dy} of walkIterator) {
         await plotter.move(dx, dy)
     }
 }
 
-async function walkToCenter() {
+async function walkToCenter(plotter) {
     const dx = (plotter.board.width / 2) - plotter.position.x;
     const dy = (plotter.board.height / 2) - plotter.position.y;
     await plotter.move(dx, dy)
