@@ -5,11 +5,16 @@ const SVGPathInterpolator = require('svg-path-interpolator')
 const InvalidTextException = require('./Exceptions/InvalidTextException')
 
 function* makeWriteIterator(text, size) {
-    const points = textToPoints(text, size)
-    while (points.length > 0) {
-        yield {
-            dx: points.shift() - plotter.position.x,
-            dy: points.shift() - plotter.position.y
+    const starty = plotter.position.y
+    const characters = text.split('')
+    while (characters.length > 0) {
+        const character = characters.shift()
+        const points = textToPoints(character, size, {x: plotter.position.x, y: starty})
+        while (points.length > 0) {
+            yield {
+                dx: points.shift() - plotter.position.x,
+                dy: points.shift() - plotter.position.y
+            }
         }
     }
 
@@ -29,10 +34,10 @@ async function write(text, size) {
     }
 }
 
-function textToPoints(text, size) {
+function textToPoints(text, size, position) {
     const textToSVG = TextToSVG.loadSync(__dirname + '/../resources/font-ems-delight.ttf')
     const attributes = {fill: 'red', stroke: 'black'}
-    const options = {x: 0, y: 0, fontSize: size, anchor: 'top', attributes: attributes}
+    const options = {x: position.x, y: position.y, fontSize: size, anchor: 'top', attributes: attributes}
 
     const svg = textToSVG.getPath(text, options)
 
