@@ -29,3 +29,8 @@ async function run () {
 }
 
 run()
+    .then(_ => {plotter.setStoredState()})
+    .catch(e => {
+        console.error(e);
+        plotter.setStoredState();
+    });
