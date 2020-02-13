@@ -23,7 +23,7 @@ async function run () {
     // Move to section of board
     points = Walker.translatePoints(points, 0, 200)
 
-    await Walker.walk(points)
+    await Walker.walk(plotter, points)
 
     plotter.release()
 }
