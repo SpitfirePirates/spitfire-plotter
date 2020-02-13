@@ -4,14 +4,16 @@
   "main": "main.js",
   "license": "MIT",
   "dependencies": {
-    "socket.io": "^2.1.1"
+    "socket.io": "^2.1.1",
+    "svg-path-interpolator": "^0.2.5",
+    "text-to-svg": "^3.1.5"
   },
   "optionalDependencies": {
     "pigpio": "^1.1.2"
   },
   "devDependencies": {
-    "local-web-server": "^2.6.0",
-    "@rafaelquines/pigpio-mock": "^0.0.2"
+    "@rafaelquines/pigpio-mock": "^0.0.2",
+    "local-web-server": "^2.6.0"
   },
   "scripts": {
     "emulate": "ws"
