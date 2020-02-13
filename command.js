@@ -1,5 +1,6 @@
 const Plotter = require('./src/Plotter.js')
 const program = require('commander')
+const Writer = require('./src/Writer')
 
 const plotter = new Plotter()
 
@@ -36,6 +37,10 @@ async function run()
     if (program.home) {
         console.log('Going home')
         await plotter.home()
+    }
+    if (program.write) {
+        console.log(`Writing '${program.write}'`)
+        await Writer.write(program.write)
     }
 
     process.exit();
