@@ -4,6 +4,7 @@
   "main": "main.js",
   "license": "MIT",
   "dependencies": {
+    "commander": "^4.1.1",
     "socket.io": "^2.1.1",
     "svg-path-interpolator": "^0.2.5",
     "text-to-svg": "^3.1.5"
