@@ -48,6 +48,15 @@ function translatePoints(points, translateX = 0, translateY = 0) {
     })
 }
 
+function scalePoints(points, factor) {
+    return points.map(function (point) {
+        return {
+            x: point.x * factor,
+            y: point.y * factor
+        }
+    })
+}
+
 function arrayToObjects(points) {
     return points.map(function (point) {
         return {
@@ -62,5 +71,6 @@ module.exports = {
     walkToCenter: walkToCenter,
     normalisePoints: normalisePoints,
     translatePoints: translatePoints,
-    arrayToObjects: arrayToObjects
+    arrayToObjects: arrayToObjects,
+    scalePoints: scalePoints,
 }
