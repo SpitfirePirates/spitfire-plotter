@@ -59,11 +59,14 @@ class Plotter
             throw new OutOfBoundsException();
         }
 
+        const currentLeftHypo = Math.round(Math.hypot(this.position.x, this.position.y))
+        const currentRightHypo = Math.round(Math.hypot(this.board.width - this.position.x, this.position.y))
+
         const leftHypo = Math.round(Math.hypot(absx, absy))
         const rightHypo = Math.round(Math.hypot(this.board.width - absx, absy))
 
-        let rightLengthDelta = Math.round(Math.abs(rightHypo - this.rightMotor.length));
-        let leftLengthDelta = Math.round(Math.abs(leftHypo - this.leftMotor.length));
+        let rightLengthDelta = Math.round(Math.abs(rightHypo - currentRightHypo));
+        let leftLengthDelta = Math.round(Math.abs(leftHypo - currentLeftHypo));
 
         let rightMove;
         let leftMove;
