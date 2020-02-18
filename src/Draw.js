@@ -2,17 +2,23 @@ const Walker = require('./Walker')
 const config = require('../config')
 const InvalidShapeException = require('./Exceptions/InvalidShapeException')
 
-async function drawPreset(plotter, name) {
-    if (!config.shapes[name]) {
-        throw new InvalidShapeException(`Shape '${name}' not found`)
+class Draw {
+    constructor(plotter) {
+        this.plotter = plotter
     }
-    points = config.shapes[name]
-    points = Walker.arrayToObjects(points)
-    points = Walker.translatePoints(points, plotter.position.x, plotter.position.y)
 
-    await Walker.walk(plotter, points)
+    async drawPreset(name) {
+        if (!config.shapes[name]) {
+            throw new InvalidShapeException(`Shape '${name}' not found`)
+        }
+        let points = config.shapes[name]
+
+        const walker = new Walker(this.plotter)
+        points = walker.arrayToObjects(points)
+        points = walker.translatePoints(points, this.plotter.position.x, this.plotter.position.y)
+
+        await walker.walk(points)
+    }
 }
 
-module.exports = {
-    drawPreset: drawPreset,
-}
+module.exports = Draw

@@ -1,76 +1,74 @@
-function* makeWalkIterator(plotter, points) {
-    for (point of points) {
-        yield {
-            dx: point.x - plotter.position.x,
-            dy: point.y - plotter.position.y
-        }
+class Walker {
+    constructor(plotter) {
+        this.plotter = plotter
     }
-    return
-}
-
-async function walk(plotter, pPoints = []) {
-    const points = normalisePoints(pPoints)
-    const walkIterator = makeWalkIterator(plotter, points)
-    for (let {dx, dy} of walkIterator) {
-        await plotter.move(dx, dy)
-    }
-}
-
-async function walkToCenter(plotter) {
-    const dx = (plotter.board.width / 2) - plotter.position.x;
-    const dy = (plotter.board.height / 2) - plotter.position.y;
-    await plotter.move(dx, dy)
-}
-
-function normalisePoints(points = []) {
-/*    const extremities = points.reduce(function(carry, point) {
-        if (!carry) {
-            return point
+    * makeWalkIterator(points) {
+        for (const point of points) {
+            yield {
+                dx: point.x - this.plotter.position.x,
+                dy: point.y - this.plotter.position.y
+            }
         }
-
         return
-    });*/
-    const factor = 1;
-    return points.map(function(point) {
-        return {
-            x: point.x * factor,
-            y: point.y * factor
+    }
+
+    async walk(pPoints = []) {
+        const points = this.normalisePoints(pPoints)
+        const walkIterator = this.makeWalkIterator(points)
+        for (let {dx, dy} of walkIterator) {
+            await this.plotter.move(dx, dy)
         }
-    })
+    }
+
+    async walkToCenter() {
+        const dx = (this.plotter.board.width / 2) - this.plotter.position.x;
+        const dy = (this.plotter.board.height / 2) - this.plotter.position.y;
+        await this.plotter.move(dx, dy)
+    }
+
+    normalisePoints(points = []) {
+        /*    const extremities = points.reduce(function(carry, point) {
+                if (!carry) {
+                    return point
+                }
+
+                return
+            });*/
+        const factor = 1;
+        return points.map(function (point) {
+            return {
+                x: point.x * factor,
+                y: point.y * factor
+            }
+        })
+    }
+
+    translatePoints(points, translateX = 0, translateY = 0) {
+        return points.map(function (point) {
+            return {
+                x: point.x + translateX,
+                y: point.y + translateY
+            }
+        })
+    }
+
+    scalePoints(points, factor) {
+        return points.map(function (point) {
+            return {
+                x: point.x * factor,
+                y: point.y * factor
+            }
+        })
+    }
+
+    arrayToObjects(points) {
+        return points.map(function (point) {
+            return {
+                x: point[0],
+                y: point[1]
+            }
+        });
+    }
 }
 
-function translatePoints(points, translateX = 0, translateY = 0) {
-    return points.map(function (point) {
-        return {
-            x: point.x + translateX,
-            y: point.y + translateY
-        }
-    })
-}
-
-function scalePoints(points, factor) {
-    return points.map(function (point) {
-        return {
-            x: point.x * factor,
-            y: point.y * factor
-        }
-    })
-}
-
-function arrayToObjects(points) {
-    return points.map(function (point) {
-        return {
-            x: point[0],
-            y: point[1]
-        }
-    });
-}
-
-module.exports = {
-    walk: walk,
-    walkToCenter: walkToCenter,
-    normalisePoints: normalisePoints,
-    translatePoints: translatePoints,
-    arrayToObjects: arrayToObjects,
-    scalePoints: scalePoints,
-}
+module.exports = Walker

@@ -4,6 +4,7 @@ const Writer = require('./src/Writer')
 const Draw = require('./src/Draw')
 
 const plotter = new Plotter()
+const draw = new Draw(plotter)
 
 program
     .version('0.1.0')
@@ -46,7 +47,9 @@ async function run()
     }
     if (program.draw) {
         console.log(`Drawing '${program.draw}'`)
-        await Draw.drawPreset(plotter, 'ubuntu')
+        await plotter.move(1000, 0)
+        await plotter.move(0, 1000)
+        await draw.drawPreset('ubuntu')
     }
 
     process.exit();
