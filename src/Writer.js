@@ -5,6 +5,8 @@ const InvalidTextException = require('./Exceptions/InvalidTextException')
 class Writer {
     constructor(plotter) {
         this.plotter = plotter
+        this.startPosition = plotter.position
+        this.fontSize = 672
     }
 
     * makeWriteIterator(text, size) {
@@ -19,14 +21,12 @@ class Writer {
         return
     }
 
-    async write(text, size) {
+    async write(text) {
         if (!text) {
             throw new InvalidTextException()
         }
-        if (!size) {
-            size = 672
-        }
-        const walkIterator = this.makeWriteIterator(text, size)
+        this.startPosition = this.plotter.position
+        const walkIterator = this.makeWriteIterator(text, this.fontSize)
         for (let {dx, dy} of walkIterator) {
             await this.plotter.move(dx, dy)
         }
@@ -48,6 +48,20 @@ class Writer {
         const pathData = interpolator.processSvg(svg)
 
         return pathData
+    }
+
+    getLineHeight() {
+        return this.fontSize
+    }
+
+    setFontSize(size) {
+        this.fontSize = size
+    }
+
+    async carriageReturn() {
+        const dx = this.startPosition.x - this.plotter.x
+        const dy = this.getLineHeight()
+        await this.plotter.move(dx, dy)
     }
 }
 
