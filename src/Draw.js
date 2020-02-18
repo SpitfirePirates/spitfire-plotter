@@ -7,10 +7,12 @@ async function drawPreset(plotter, name) {
         throw new InvalidShapeException(`Shape '${name}' not found`)
     }
     points = config.shapes[name]
-    points = Walker.arrayToObjects(points)
-    points = Walker.translatePoints(points, plotter.position.x, plotter.position.y)
 
-    await Walker.walk(plotter, points)
+    const walker = new Walker(plotter)
+    points = walker.arrayToObjects(points)
+    points = walker.translatePoints(points, plotter.position.x, plotter.position.y)
+
+    await walker.walk(plotter, points)
 }
 
 module.exports = {

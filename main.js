@@ -5,6 +5,7 @@ const Shapes = require('./src/Shapes.js')
 const Walker = require('./src/Walker.js')
 
 const plotter = new Plotter()
+const walker = new Walker(plotter)
 
 async function run () {
 
@@ -24,7 +25,7 @@ async function run () {
         { x: 800, y: 600}
     ]
 
-    await Walker.walk(points)
+    await walker.walk(points)
 
     plotter.release()
 }

@@ -5,6 +5,7 @@ const Shapes = require('./src/Shapes.js')
 const Walker = require('./src/Walker.js')
 
 const plotter = new Plotter()
+const walker = new Walker(plotter)
 
 async function run () {
 
@@ -18,7 +19,7 @@ async function run () {
         return count % 10 === 0;
     })
 
-    await Walker.walk(data)
+    await walker.walk(data)
 
     plotter.release()
 }
