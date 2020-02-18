@@ -3,7 +3,7 @@ const gpio = debug ? require('@rafaelquines/pigpio-mock').Gpio : require('pigpio
 
 class Motor {
 
-    constructor(length, pinDirection, pinStep, msPin0, msPin1, msPin2) {
+    constructor(pinDirection, pinStep, msPin0, msPin1, msPin2) {
         this.length = length
         this.pins = {
             direction: new gpio(pinDirection, {mode: gpio.OUTPUT}),

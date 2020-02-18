@@ -34,14 +34,12 @@ class Plotter
 
         this.board = { width: 1875*this.microsteppingMultiplier, height: 1100*this.microsteppingMultiplier }
 
-        this.leftMotor = new LeftMotor(0)
-        this.rightMotor = new RightMotor(this.board.width)
+        this.leftMotor = new LeftMotor()
+        this.rightMotor = new RightMotor()
 
         const restoredState = this.getStoredState();
 
         this.position = restoredState.position;
-        this.leftMotor.length = restoredState.leftMotor.length;
-        this.rightMotor.length = restoredState.rightMotor.length;
 
         this.pointsHistory.push(Object.assign({}, this.position))
     }
@@ -82,20 +80,17 @@ class Plotter
             rightSpeed = rightLengthDelta/leftLengthDelta;
         }
 
-        if(leftHypo > this.leftMotor.length) {
+        if(leftHypo > currentLeftHypo) {
             leftMove = this.leftMotor.reelOut(leftLengthDelta, leftSpeed)
         } else {
             leftMove = this.leftMotor.reelIn(leftLengthDelta, leftSpeed)
         }
 
-        if(rightHypo > this.rightMotor.length) {
+        if(rightHypo > currentRightHypo) {
             rightMove = this.rightMotor.reelOut(rightLengthDelta, rightSpeed)
         } else {
             rightMove = this.rightMotor.reelIn(rightLengthDelta, rightSpeed)
         }
-
-        this.leftMotor.length = leftHypo
-        this.rightMotor.length = rightHypo
 
         this.position.x = absx
         this.position.y = absy
@@ -139,12 +134,6 @@ class Plotter
     setStoredState() {
         const state = {
             'position': this.position,
-            'leftMotor': {
-                'length': this.leftMotor.length
-            },
-            'rightMotor': {
-                'length': this.rightMotor.length
-            }
         };
 
         fs.writeFileSync('state.json', JSON.stringify(state));
@@ -162,12 +151,6 @@ class Plotter
                     'x': 0,
                     'y': 0
                 },
-                'leftMotor': {
-                    'length': 0
-                },
-                'rightMotor': {
-                    'length': this.board.width
-                }
             };
         }
 

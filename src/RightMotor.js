@@ -2,8 +2,8 @@ const Motor = require('./Motor.js')
 
 class RightMotor extends Motor {
 
-    constructor(length) {
-        super(length, 11, 9, 17, 27, 22)
+    constructor() {
+        super(11, 9, 17, 27, 22)
     }
 
     reelIn(steps, speed) {
