@@ -46,8 +46,6 @@ async function run()
     }
     if (program.draw) {
         console.log(`Drawing '${program.draw}'`)
-        await plotter.move(1000, 0)
-        await plotter.move(0, 1000)
         await Draw.drawPreset(plotter, 'ubuntu')
     }
 
