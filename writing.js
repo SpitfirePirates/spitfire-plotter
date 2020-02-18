@@ -4,10 +4,11 @@ const Plotter = require('./src/Plotter.js')
 const Writer = require('./src/Writer.js')
 
 const plotter = new Plotter()
+const writer = new Writer(plotter)
 
 async function run () {
 
-    await Writer.write("Hello world")
+    await writer.write("Hello world")
 
     plotter.release()
 }

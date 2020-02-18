@@ -5,6 +5,7 @@ const Draw = require('./src/Draw')
 
 const plotter = new Plotter()
 const draw = new Draw(plotter)
+const writer = new Writer(plotter)
 
 program
     .version('0.1.0')
@@ -43,7 +44,7 @@ async function run()
     }
     if (program.write) {
         console.log(`Writing '${program.write}'`)
-        await Writer.write(program.write)
+        await writer.write(program.write)
     }
     if (program.draw) {
         console.log(`Drawing '${program.draw}'`)
