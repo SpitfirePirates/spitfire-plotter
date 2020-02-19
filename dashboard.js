@@ -16,16 +16,16 @@ async function run () {
     const quotes = quoteFile.split('\n')
     const quote = quotes[Math.floor(Math.random() * quotes.length)]
 
+    await plotter.home()
+
     await plotter.move(0, 250)
     writer.setFontSize(config.writer.font.sizes.small)
-    await writer.write('Quote of the day')
+    await writer.write('Quote of the day:')
     await writer.carriageReturn();
-    writer.setFontSize(config.writer.font.sizes.medium)
     await writer.write(quote)
     await writer.carriageReturn()
     await draw.drawPreset('ubuntu')
 
-    await plotter.home()
     plotter.release()
 }
 
