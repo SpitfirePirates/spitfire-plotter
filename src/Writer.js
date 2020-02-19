@@ -1,20 +1,21 @@
 const TextToSVG = require('text-to-svg')
 const SVGPathInterpolator = require('svg-path-interpolator')
 const InvalidTextException = require('./Exceptions/InvalidTextException')
+const config = require('../config')
 
 class Writer {
     constructor(plotter) {
         this.plotter = plotter
-        this.startPosition = plotter.position
-        this.fontSize = 672
+        this.startPosition = Object.assign({}, this.plotter.position)
+        this.fontSize = config.writer.font.sizes.medium
     }
 
     * makeWriteIterator(text, size) {
         const points = this.textToPoints(text, size)
-        while (points.length > 0) {
+        for (const point of points) {
             yield {
-                dx: points.shift() - this.plotter.position.x,
-                dy: points.shift() - this.plotter.position.y
+                dx: point.x - this.plotter.position.x,
+                dy: point.y - this.plotter.position.y
             }
         }
 
@@ -25,7 +26,7 @@ class Writer {
         if (!text) {
             throw new InvalidTextException()
         }
-        this.startPosition = this.plotter.position
+        this.startPosition = Object.assign({}, this.plotter.position)
         const walkIterator = this.makeWriteIterator(text, this.fontSize)
         for (let {dx, dy} of walkIterator) {
             await this.plotter.move(dx, dy)
@@ -47,7 +48,15 @@ class Writer {
         })
         const pathData = interpolator.processSvg(svg)
 
-        return pathData
+        const points = []
+        while (pathData.length > 1) {
+            points.push({
+                x: pathData.shift() + this.startPosition.x,
+                y: pathData.shift() + this.startPosition.y
+            })
+        }
+
+        return points
     }
 
     getLineHeight() {
@@ -59,7 +68,7 @@ class Writer {
     }
 
     async carriageReturn() {
-        const dx = this.startPosition.x - this.plotter.x
+        const dx = this.startPosition.x - this.plotter.position.x
         const dy = this.getLineHeight()
         await this.plotter.move(dx, dy)
     }
