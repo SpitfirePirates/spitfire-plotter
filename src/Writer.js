@@ -1,12 +1,13 @@
 const TextToSVG = require('text-to-svg')
 const SVGPathInterpolator = require('svg-path-interpolator')
 const InvalidTextException = require('./Exceptions/InvalidTextException')
+const config = require('../config')
 
 class Writer {
     constructor(plotter) {
         this.plotter = plotter
         this.startPosition = plotter.position
-        this.fontSize = 672
+        this.fontSize = config.writer.font.sizes.medium
     }
 
     * makeWriteIterator(text, size) {
