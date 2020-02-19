@@ -41,9 +41,9 @@ class Writer {
 
         const interpolator = new SVGPathInterpolator({
             joinPathData: true,
-            minDistance: 0.5,
+            minDistance: 1.5,
             roundToNearest: 0.25,
-            sampleFrequency: 0.001
+            sampleFrequency: 0.005
         })
         const pathData = interpolator.processSvg(svg)
 
