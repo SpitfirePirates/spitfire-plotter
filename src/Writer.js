@@ -6,16 +6,16 @@ const config = require('../config')
 class Writer {
     constructor(plotter) {
         this.plotter = plotter
-        this.startPosition = plotter.position
+        this.startPosition = this.plotter.position
         this.fontSize = config.writer.font.sizes.medium
     }
 
     * makeWriteIterator(text, size) {
         const points = this.textToPoints(text, size)
-        while (points.length > 0) {
+        for (const point of points) {
             yield {
-                dx: points.shift() - this.plotter.position.x,
-                dy: points.shift() - this.plotter.position.y
+                dx: point.x - this.plotter.position.x,
+                dy: point.y - this.plotter.position.y
             }
         }
 
@@ -48,7 +48,15 @@ class Writer {
         })
         const pathData = interpolator.processSvg(svg)
 
-        return pathData
+        const points = []
+        while (pathData.length > 1) {
+            points.push({
+                x: pathData.shift() + this.startPosition.x,
+                y: pathData.shift() + this.startPosition.y
+            })
+        }
+
+        return points
     }
 
     getLineHeight() {
