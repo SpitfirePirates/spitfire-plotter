@@ -21,14 +21,16 @@ async function run () {
 
     await plotter.home()
 
-    // writer.setFontSize(config.writer.font.sizes.small)
-    // await writer.write('Quote of the day:')
-    // await writer.carriageReturn();
-    // await writer.write(quote)
-    // await writer.carriageReturn()
+    writer.setFontSize(config.writer.font.sizes.small)
+    await writer.write('Quote of the day:')
+    await writer.carriageReturn();
+    await writer.write(quote)
+    await writer.carriageReturn()
     const graph = new Graph(plotter, 7450, 7500, async _ => {
         return await getBitcoinPrice()
     })
+    graph.steps.total = 40
+    graph.steps.duration = 300
     await graph.start()
 
     plotter.release()
