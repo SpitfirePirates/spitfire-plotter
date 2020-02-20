@@ -25,6 +25,10 @@ async function run () {
     // await writer.write(quote)
     // await writer.carriageReturn()
     const graph = new Graph(plotter, 2000)
+    graph.callback = graph => {
+        const value = getBitcoinPrice()
+        graph.plot(value)
+    }
     await graph.start()
 
     plotter.release()
