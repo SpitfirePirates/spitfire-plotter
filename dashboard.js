@@ -1,10 +1,12 @@
 'use strict'
 
+const fs = require('fs').promises
+const https = require('https')
+
 const Plotter = require('./src/Plotter.js')
 const Writer = require('./src/Writer.js')
 const Draw = require('./src/Draw.js')
 const Graph = require('./src/Graph.js')
-const fs = require('fs').promises
 const config = require('./config')
 
 const plotter = new Plotter()
@@ -24,7 +26,7 @@ async function run () {
     // await writer.carriageReturn();
     // await writer.write(quote)
     // await writer.carriageReturn()
-    const graph = new Graph(plotter, 100, async _ => {
+    const graph = new Graph(plotter, 7450, 7500, async _ => {
         return await getBitcoinPrice()
     })
     await graph.start()
@@ -35,5 +37,16 @@ async function run () {
 run()
 
 async function getBitcoinPrice() {
-    return 50
+    return new Promise((resolve, reject) => {
+        https.get('https://api.coindesk.com/v1/bpi/currentprice.json', resp => {
+            let data = ''
+            resp.on('data', chunk => {
+                data += chunk
+            })
+            resp.on('end', _ => {
+                const json = JSON.parse(data)
+                resolve(json.bpi.GBP.rate_float)
+            })
+        })
+    })
 }

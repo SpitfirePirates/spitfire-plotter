@@ -1,7 +1,7 @@
 const InvalidGraphCallbackException = require('./Exceptions/InvalidGraphCallbackException')
 
 class Graph {
-    constructor(plotter, max = 1000, callback = null) {
+    constructor(plotter, min = 0, max = 1000, callback = null) {
         this.plotter = plotter
         this.width = 2000
         this.height = 2000
@@ -12,7 +12,8 @@ class Graph {
             duration: 5
         }
         this.value = {
-            current: 0,
+            current: min,
+            min: min,
             max: max
         }
         this.callback = callback
@@ -49,7 +50,8 @@ class Graph {
 
     async processStep() {
         const value = await this.callback.call()
-        const scaleFactor = this.height / this.value.max
+        const scaleFactor = this.height / (this.value.max - this.value.min)
+        console.log('Plotting graph value of ' + value)
         await this.plotter.move(this.width / this.steps.total, (value - this.value.current) * scaleFactor * -1)
 
         this.value.current = value
