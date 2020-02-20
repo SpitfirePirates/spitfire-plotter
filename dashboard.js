@@ -24,14 +24,16 @@ async function run () {
     // await writer.carriageReturn();
     // await writer.write(quote)
     // await writer.carriageReturn()
-    const graph = new Graph(plotter, 2000)
-    graph.callback = graph => {
-        const value = getBitcoinPrice()
-        graph.plot(value)
-    }
+    const graph = new Graph(plotter, 100, async _ => {
+        return await getBitcoinPrice()
+    })
     await graph.start()
 
     plotter.release()
 }
 
 run()
+
+async function getBitcoinPrice() {
+    return 50
+}
