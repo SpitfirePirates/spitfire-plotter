@@ -25,12 +25,14 @@ async function run () {
 
     await plotter.home()
 
+    await plotter.move(0, 500)
+
     writer.setFontSize(config.writer.font.sizes.small)
     await writer.write('Quote of the day:')
     await writer.carriageReturn();
     await writer.write(quote)
     await writer.carriageReturn()
-    const graph = new Graph(plotter, 7800, 8200, async _ => {
+    const graph = new Graph(plotter, 7400, 7600, async _ => {
         return await getBitcoinPrice()
     })
     graph.width = 6000
