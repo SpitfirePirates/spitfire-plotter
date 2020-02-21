@@ -17,6 +17,10 @@ async function run () {
 
     const quoteFile = await fs.readFile(__dirname + '/storage/quotes', 'utf8')
     const quotes = quoteFile.split('\n')
+    // Filter out long quotes
+    quotes.filter(function (quote) {
+        return quote.length < 60
+    })
     const quote = quotes[Math.floor(Math.random() * quotes.length)]
 
     await plotter.home()
@@ -26,12 +30,15 @@ async function run () {
     await writer.carriageReturn();
     await writer.write(quote)
     await writer.carriageReturn()
-    const graph = new Graph(plotter, 7450, 7500, async _ => {
+    const graph = new Graph(plotter, 7800, 8200, async _ => {
         return await getBitcoinPrice()
     })
-    graph.steps.total = 40
-    graph.steps.duration = 300
+    graph.width = 6000
+    graph.steps.total = 120
+    graph.steps.duration = 60
     await graph.start()
+
+    await draw.drawPreset('ubuntu')
 
     plotter.release()
 }
