@@ -4,39 +4,65 @@
     <meta charset="UTF-8">
     <title>Emulator</title>
     <style>
+        body, html {
+            padding: 0;
+        }
         body {
+            margin: 20px;
             background: #ddd;
         }
         canvas {
             display: block;
-            margin: 50px auto;
+            margin: 0 auto;
             border: 3px solid #666;
-            width: 750px;
-            height: 500px;
             background: #fff;
-        }
-        .actions {
-            display: flex;
-            justify-content: center;
         }
         .actions > div {
             padding: 5px;
             color: #bbb;
         }
-        .connected.active {
-            color: #3ac11f;
+        .overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            opacity: 0.3;
+            background: repeating-linear-gradient(
+                    -55deg,
+                    #222,
+                    #222 30px,
+                    #333 30px,
+                    #333 60px
+            );
+        }
+        .overlay.active {
+            display: block;
+        }
+        .disconnected {
+            display: none;
+            position: absolute;
+            font-family: sans-serif;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-transform: uppercase;
+            border: 6px solid crimson;
+            color: crimson;
+            padding: 2px 10px;
+            font-size: 4em;
+            background: #FFF;
         }
         .disconnected.active {
-            color: #ff0000;
+            display: block;
         }
     </style>
 </head>
 <body>
     <canvas width="1875" height="1100"></canvas>
-    <div class="actions">
-        <div class="connected">Connected</div>
-        <div class="disconnected active">Disconnected</div>
-    </div>
+    <div class="overlay active"></div>
+    <div class="disconnected active">Disconnected</div>
 
     <script src="/node_modules/socket.io-client/dist/socket.io.js"></script>
     <script>
@@ -50,6 +76,19 @@
                 drawCtx = drawCanvas.getContext('2d'),
                 refreshCtx = refreshCanvas.getContext('2d')
 
+        function setCanvasSize() {
+            const canvasSizeRatio = mainCanvas.height / mainCanvas.width;
+
+            const canvasHeight = window.innerHeight - 46;
+            const canvasWidth = canvasHeight / canvasSizeRatio;
+
+            mainCanvas.style.width = `${canvasWidth}px`;
+            mainCanvas.style.height = `${canvasHeight}px`;
+        }
+
+        window.addEventListener('resize', setCanvasSize);
+        setCanvasSize();
+
         let points = [];
 
         drawCanvas.width = refreshCanvas.width = mainCanvas.width
@@ -61,12 +100,12 @@
         refreshCtx.setLineDash([3, 3])
 
         socket.on('connect', socket => {
-            document.querySelector('.connected').classList.add('active')
             document.querySelector('.disconnected').classList.remove('active')
+            document.querySelector('.overlay').classList.remove('active')
         })
         socket.on('disconnect', socket => {
-            document.querySelector('.connected').classList.remove('active')
             document.querySelector('.disconnected').classList.add('active')
+            document.querySelector('.overlay').classList.add('active')
         })
 
         socket.on('move', position => {
