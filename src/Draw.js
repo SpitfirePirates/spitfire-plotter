@@ -1,5 +1,6 @@
 const Walker = require('./Walker')
 const config = require('../config')
+const PointCollection = require('./PointCollection')
 const InvalidShapeException = require('./Exceptions/InvalidShapeException')
 
 class Draw {
@@ -11,13 +12,13 @@ class Draw {
         if (!config.shapes[name]) {
             throw new InvalidShapeException(`Shape '${name}' not found`)
         }
-        let points = config.shapes[name]
-
+        let pointArray = config.shapes[name]
         const walker = new Walker(this.plotter)
-        points = walker.arrayToObjects(points)
-        points = walker.translatePoints(points, this.plotter.position.x, this.plotter.position.y)
+        const pointCollection = (new PointCollection).fromArray(pointArray);
 
-        await walker.walk(points)
+        pointCollection.translate(this.plotter.position.x, this.plotter.position.y)
+
+        await walker.walk(pointCollection)
     }
 }
 
