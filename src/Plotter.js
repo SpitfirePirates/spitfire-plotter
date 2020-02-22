@@ -1,29 +1,28 @@
 const LeftMotor  = require('./LeftMotor.js')
 const RightMotor = require('./RightMotor.js')
 const fs = require("fs");
-const io = require('socket.io')(3000)
 const debug = (process.env.NODE_ENV !== 'production')
 const pigpio = debug ? require('@rafaelquines/pigpio-mock') : require('pigpio')
 const OutOfBoundsException = require('./Exceptions/OutOfBoundsException')
+const DebugServer = require('./DebugServer.js');
 
 class Plotter
 {
     constructor() {
         pigpio.initialize();
         process.on('exit', (code) => {
-            pigpio.terminate();
-            this.setStoredState();
+            this.terminate();
         });
         process.on('SIGINT', _ => {
             process.exit();
         });
-
-        this.pointsHistory = []
-
-        io.on('connection', socket => {
-            socket.emit('history', this.pointsHistory)
+        process.on('unhandledRejection', (reason, p) => {
+            console.error(reason)
+            process.exit();
         })
 
+        this.moveEventHandlers = []
+        this.terminateEventHandlers = []
         this.microsteppingMultiplier = 4;
 
         // const motorDistance = 600; //mm
@@ -41,7 +40,11 @@ class Plotter
 
         this.position = restoredState.position;
 
-        this.pointsHistory.push(Object.assign({}, this.position))
+        this.addMoveEventHandler(position => console.log(position))
+
+        if (debug) {
+            new DebugServer(this);
+        }
     }
 
     // move relative to the current position
@@ -122,16 +125,16 @@ class Plotter
         this.rightMotor.release()
     }
 
-    onMove(newPosition, leftHypo, rightHypo) {
-        console.log('new pos', newPosition)
+    addMoveEventHandler(callback) {
+        this.moveEventHandlers.push(callback);
+    }
 
-        if (debug) {
-            this.pointsHistory.push(Object.assign({}, newPosition))
-            io.emit('move', newPosition)
-        }
+    onMove(newPosition, leftHypo, rightHypo) {
+        this.moveEventHandlers.forEach(handler => handler(newPosition, leftHypo, rightHypo))
     }
 
     setStoredState() {
+        console.log('Saving state...')
         const state = {
             'position': this.position,
         };
@@ -154,6 +157,16 @@ class Plotter
             };
         }
 
+    }
+
+    terminate() {
+        this.setStoredState();
+        pigpio.terminate();
+        this.terminateEventHandlers.forEach(handler => handler())
+    }
+
+    addTerminateEventHandler(callback) {
+        this.terminateEventHandlers.push(callback);
     }
 }
 
