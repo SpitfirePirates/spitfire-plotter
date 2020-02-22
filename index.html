@@ -12,8 +12,10 @@
             background: #ddd;
         }
         canvas {
-            display: block;
-            margin: 0 auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             border: 3px solid #666;
             background: #fff;
         }
@@ -57,10 +59,14 @@
         .disconnected.active {
             display: block;
         }
+        #wires {
+            background: transparent;
+        }
     </style>
 </head>
 <body>
-    <canvas width="1875" height="1100"></canvas>
+    <canvas id="board" width="1875" height="1100"></canvas>
+    <canvas id="wires" width="1875" height="1100"></canvas>
     <div class="overlay active"></div>
     <div class="disconnected active">Disconnected</div>
 
@@ -69,109 +75,83 @@
         const socket = io('//:3000'),
                 position = null,
                 stepAmount = 10,
-                mainCanvas = document.querySelector('canvas'),
-                drawCanvas = document.createElement('canvas'),
-                refreshCanvas = document.createElement('canvas'),
-                mainCtx = mainCanvas.getContext('2d'),
-                drawCtx = drawCanvas.getContext('2d'),
-                refreshCtx = refreshCanvas.getContext('2d')
+                boardCanvas = document.querySelector('canvas#board'),
+                wiresCanvas = document.querySelector('canvas#wires'),
+                boardCtx = boardCanvas.getContext('2d'),
+                wiresCtx = wiresCanvas.getContext('2d')
 
         function setCanvasSize() {
-            const canvasSizeRatio = mainCanvas.height / mainCanvas.width;
+            const canvasSizeRatio = boardCanvas.height / boardCanvas.width;
 
             const canvasHeight = window.innerHeight - 46;
             const canvasWidth = canvasHeight / canvasSizeRatio;
 
-            mainCanvas.style.width = `${canvasWidth}px`;
-            mainCanvas.style.height = `${canvasHeight}px`;
+            boardCanvas.style.width = `${canvasWidth}px`;
+            boardCanvas.style.height = `${canvasHeight}px`;
+            wiresCanvas.style.width = `${canvasWidth}px`;
+            wiresCanvas.style.height = `${canvasHeight}px`;
         }
 
         function clearCanvas() {
-            drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height)
+            boardCtx.clearRect(0,0,boardCanvas.width,boardCanvas.height)
         }
 
         window.addEventListener('resize', setCanvasSize);
         setCanvasSize();
 
-        let points = [];
+        wiresCanvas.width = boardCanvas.width
+        wiresCanvas.height = boardCanvas.height
+        boardCtx.lineWidth = 3
+        boardCtx.strokeStyle = '#3ac11f'
+        wiresCtx.strokeStyle = '#aaa'
+        wiresCtx.lineWidth = 3
+        wiresCtx.setLineDash([3, 3])
 
-        drawCanvas.width = refreshCanvas.width = mainCanvas.width
-        drawCanvas.height = refreshCanvas.height = mainCanvas.height
-        drawCtx.lineWidth = 3
-        drawCtx.strokeStyle = '#3ac11f'
-        refreshCtx.strokeStyle = '#aaa'
-        refreshCtx.lineWidth = 3
-        refreshCtx.setLineDash([3, 3])
-
-        socket.on('connect', socket => {
-            clearCanvas()
-            document.querySelector('.disconnected').classList.remove('active')
-            document.querySelector('.overlay').classList.remove('active')
-        })
         socket.on('disconnect', socket => {
             document.querySelector('.disconnected').classList.add('active')
             document.querySelector('.overlay').classList.add('active')
         })
 
-        socket.on('move', position => {
-            points.push(position);
-        })
-
-        socket.on('history', history => {
-            console.log("Received position history")
-            points = history
-        })
-
-        function draw({x: xFrom,y: yFrom},{x: xTo,y: yTo}) {
-            xFrom /= 4;
-            yFrom /= 4;
-            xTo /= 4;
-            yTo /= 4;
-
-
-            drawCtx.beginPath()
-            drawCtx.moveTo(xFrom, yFrom)
-            drawCtx.lineTo(xTo, yTo)
-            drawCtx.stroke()
-            drawCtx.closePath();
-
-            refreshCtx.clearRect(0, 0, refreshCanvas.width, refreshCanvas.height)
-            refreshCtx.beginPath()
-            refreshCtx.moveTo(0, 0)
-            refreshCtx.lineTo(xTo, yTo)
-            refreshCtx.stroke()
-            refreshCtx.moveTo(refreshCanvas.width, 0)
-            refreshCtx.lineTo(xTo, yTo)
-            refreshCtx.stroke()
-            refreshCtx.closePath();
-        }
-
         let lastPoint = null;
 
-        function drawTo() {
+        socket.on('connect', function () {
+            clearCanvas()
+            document.querySelector('.disconnected').classList.remove('active')
+            document.querySelector('.overlay').classList.remove('active')
 
-            if (points.length > 0) {
+            getPoints();
+        });
 
+        function getPoints() {
+            socket.emit('getPoints', { count: 200 }, points => {
                 if (lastPoint === null) {
                     lastPoint = points.shift()
                 }
 
+                boardCtx.beginPath()
                 points.forEach(point => {
-                    draw(lastPoint, point)
+                    boardCtx.moveTo(lastPoint.x/4, lastPoint.y/4)
+                    boardCtx.lineTo(point.x/4, point.y/4)
+
                     points.shift()
                     lastPoint = point;
                 })
+                boardCtx.stroke()
+                boardCtx.closePath();
 
+                wiresCtx.clearRect(0, 0, wiresCanvas.width, wiresCanvas.height)
+                wiresCtx.beginPath()
+                wiresCtx.moveTo(0, 0)
+                wiresCtx.lineTo(lastPoint.x/4, lastPoint.y/4)
+                wiresCtx.stroke()
+                wiresCtx.moveTo(wiresCanvas.width, 0)
+                wiresCtx.lineTo(lastPoint.x/4, lastPoint.y/4)
+                wiresCtx.stroke()
+                wiresCtx.closePath();
 
-                mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height)
-                mainCtx.drawImage(refreshCanvas, 0, 0)
-                mainCtx.drawImage(drawCanvas, 0, 0)
-            }
-
-            requestAnimationFrame(drawTo)
+                requestAnimationFrame(getPoints)
+            });
         }
-
-        requestAnimationFrame(drawTo)
     </script>
 </body>
 </html>

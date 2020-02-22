@@ -7,22 +7,24 @@ class DebugServer {
         this.pointHistory = []
 
         this.server.on('connection', socket => {
-            socket.emit('history', this.pointHistory)
-        })
+            let position = 0;
+            socket.on('getPoints', (options, fn) => {
+                const points = this.pointHistory.slice(position, position+options.count);
+
+                position += points.length;
+                fn(points);
+            });
+        });
 
         plotter.addMoveEventHandler((position, leftHypo, rightHypo) => {
-            this.pointHistory.push(position)
-        })
-
-        plotter.addMoveEventHandler((position, leftHypo, rightHypo) => {
-            this.server.emit('move', position)
+            this.pointHistory.push(Object.assign({}, position))
         })
 
         plotter.addTerminateEventHandler(_ => {
             this.terminate()
         })
 
-        this.pointHistory.push(plotter.position)
+        this.pointHistory.push(Object.assign({}, plotter.position))
     }
 
     terminate() {
