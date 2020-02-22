@@ -50,6 +50,19 @@
                 drawCtx = drawCanvas.getContext('2d'),
                 refreshCtx = refreshCanvas.getContext('2d')
 
+        function setCanvasSize() {
+            const canvasSizeRatio = mainCanvas.height / mainCanvas.width;
+
+            const canvasHeight = window.innerHeight - 46;
+            const canvasWidth = canvasHeight / canvasSizeRatio;
+
+            mainCanvas.style.width = `${canvasWidth}px`;
+            mainCanvas.style.height = `${canvasHeight}px`;
+        }
+
+        window.addEventListener('resize', setCanvasSize);
+        setCanvasSize();
+
         let points = [];
 
         drawCanvas.width = refreshCanvas.width = mainCanvas.width
