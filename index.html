@@ -86,6 +86,10 @@
             mainCanvas.style.height = `${canvasHeight}px`;
         }
 
+        function clearCanvas() {
+            drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height)
+        }
+
         window.addEventListener('resize', setCanvasSize);
         setCanvasSize();
 
@@ -100,6 +104,7 @@
         refreshCtx.setLineDash([3, 3])
 
         socket.on('connect', socket => {
+            clearCanvas()
             document.querySelector('.disconnected').classList.remove('active')
             document.querySelector('.overlay').classList.remove('active')
         })
