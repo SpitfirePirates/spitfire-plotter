@@ -120,10 +120,10 @@ class Plotter
         await this.move(-this.position.x, -this.position.y);
     }
 
-    release() {
-        this.leftMotor.release()
-        this.rightMotor.release()
-    }
+    // release() {
+    //     this.leftMotor.release()
+    //     this.rightMotor.release()
+    // }
 
     addMoveEventHandler(callback) {
         this.moveEventHandlers.push(callback);

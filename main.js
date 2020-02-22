@@ -26,8 +26,6 @@ async function run () {
     ]
 
     await walker.walk(points)
-
-    plotter.release()
 }
 
 run()

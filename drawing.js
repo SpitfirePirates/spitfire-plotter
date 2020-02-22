@@ -9,8 +9,6 @@ const draw = new Draw(plotter)
 async function run () {
 
     await draw.drawPreset('ubuntu')
-
-    plotter.release()
 }
 
 run();

@@ -41,8 +41,6 @@ async function run () {
     await graph.start()
 
     await draw.drawPreset('ubuntu')
-
-    plotter.release()
 }
 
 run()

@@ -9,8 +9,6 @@ const writer = new Writer(plotter)
 async function run () {
 
     await writer.write("Hello world")
-
-    plotter.release()
 }
 
 run()
