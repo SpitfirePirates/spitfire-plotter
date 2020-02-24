@@ -21,9 +21,9 @@ class PointCollection {
         }
     }
 
-    iterate(callback) {
+    async iterate(callback) {
         for (let {x, y} of this.makeIterator()) {
-            callback(x,y);
+            await callback(x,y);
         }
     }
 
