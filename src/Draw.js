@@ -14,7 +14,7 @@ class Draw {
         }
         let pointArray = config.shapes[name]
         const walker = new Walker(this.plotter)
-        const pointCollection = (new PointCollection).fromArray(pointArray);
+        const pointCollection = PointCollection.fromArray(pointArray);
 
         pointCollection.translate(this.plotter.position.x, this.plotter.position.y)
 

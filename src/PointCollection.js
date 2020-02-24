@@ -4,7 +4,7 @@ class PointCollection {
         this.points = points;
     }
 
-    fromArray(pointArray) {
+    static fromArray(pointArray) {
         const points = pointArray.map(function (point) {
             return {
                 x: point[0],
