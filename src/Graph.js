@@ -33,26 +33,26 @@ class Graph {
 
     async reposition() {
         if (this.plotter.position.x < this.tailLength) {
-            await this.plotter.move(this.tailLength, 0)
+            await this.plotter.moveInterpolate(this.tailLength, 0)
         }
         if (this.plotter.position.y < this.tailLength) {
-            await this.plotter.move(0, this.tailLength)
+            await this.plotter.moveInterpolate(0, this.tailLength)
         }
     }
 
     async drawAxes() {
-        await this.plotter.move(0, this.height + this.tailLength)
-        await this.plotter.move(0, this.tailLength * -1)
-        await this.plotter.move(this.tailLength * -1, 0)
-        await this.plotter.move(this.width + this.tailLength, 0)
-        await this.plotter.move((this.width) * -1, 0)
+        await this.plotter.moveInterpolate(0, this.height + this.tailLength)
+        await this.plotter.moveInterpolate(0, this.tailLength * -1)
+        await this.plotter.moveInterpolate(this.tailLength * -1, 0)
+        await this.plotter.moveInterpolate(this.width + this.tailLength, 0)
+        await this.plotter.moveInterpolate((this.width) * -1, 0)
     }
 
     async processStep() {
         const value = await this.callback.call()
         const scaleFactor = this.height / (this.value.max - this.value.min)
         console.log('Plotting graph value of ' + value)
-        await this.plotter.move(this.width / this.steps.total, (value - this.value.current) * scaleFactor * -1)
+        await this.plotter.moveInterpolate(this.width / this.steps.total, (value - this.value.current) * scaleFactor * -1)
 
         this.value.current = value
         this.steps.current++

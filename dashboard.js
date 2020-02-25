@@ -15,13 +15,14 @@ const draw = new Draw(plotter)
 
 async function run () {
 
-    const quoteFile = await fs.readFile(__dirname + '/storage/quotes', 'utf8')
-    const quotes = quoteFile.split('\n')
-    // Filter out long quotes
-    quotes.filter(function (quote) {
-        return quote.length < 60
-    })
-    const quote = quotes[Math.floor(Math.random() * quotes.length)]
+    // const quoteFile = await fs.readFile(__dirname + '/storage/quotes', 'utf8')
+    // const quotes = quoteFile.split('\n')
+    // // Filter out long quotes
+    // quotes.filter(function (quote) {
+    //     return quote.length < 60
+    // })
+    // const quote = quotes[Math.floor(Math.random() * quotes.length)]
+    const quote = 'Hello world'
 
     await plotter.home()
 

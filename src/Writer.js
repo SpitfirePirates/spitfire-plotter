@@ -29,7 +29,7 @@ class Writer {
         this.startPosition = Object.assign({}, this.plotter.position)
         const walkIterator = this.makeWriteIterator(text, this.fontSize)
         for (let {dx, dy} of walkIterator) {
-            await this.plotter.move(dx, dy)
+            await this.plotter.moveInterpolate(dx, dy)
         }
     }
 
@@ -70,7 +70,7 @@ class Writer {
     async carriageReturn() {
         const dx = this.startPosition.x - this.plotter.position.x
         const dy = this.getLineHeight()
-        await this.plotter.move(dx, dy)
+        await this.plotter.moveInterpolate(dx, dy)
     }
 }
 

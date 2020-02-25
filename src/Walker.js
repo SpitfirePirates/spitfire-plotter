@@ -5,7 +5,7 @@ class Walker {
 
     async walk(pointCollection) {
         return pointCollection.iterate(async (x,y) => {
-            await this.plotter.move(x - this.plotter.position.x, y - this.plotter.position.y)
+            await this.plotter.moveInterpolate(x - this.plotter.position.x, y - this.plotter.position.y)
         })
     }
 

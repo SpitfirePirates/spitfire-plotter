@@ -1,11 +1,15 @@
 'use strict'
 
 const Plotter = require('./src/Plotter.js')
-const Shapes = require('./src/Shapes.js')
 const Walker = require('./src/Walker.js')
+const PointCollection = require('./src/PointCollection.js')
 
 const plotter = new Plotter()
 const walker = new Walker(plotter)
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
 
 async function run () {
 
@@ -18,12 +22,12 @@ async function run () {
     
     //await Walker.walkToCenter()
 
-    const points = [
-        { x: 100, y: 100},
-        { x: 200, y: 200},
-        { x: 800, y: 200},
-        { x: 800, y: 600}
-    ]
+    let points1 = [
+        { x: 0, y: 0},
+        { x: getRandomInt(plotter.board.width), y: getRandomInt(plotter.board.height)},
+        { x: 0, y: 0},
+    ];
+    const points = new PointCollection(points1)
 
     await walker.walk(points)
 }

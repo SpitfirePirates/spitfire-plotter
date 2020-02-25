@@ -40,7 +40,7 @@ class Plotter
 
         this.position = restoredState.position;
 
-        this.addMoveEventHandler(position => console.log(position))
+        // this.addMoveEventHandler(position => console.log(position))
 
         if (debug) {
             new DebugServer(this);
@@ -55,6 +55,8 @@ class Plotter
 
         const absx = this.position.x + x
         const absy = this.position.y + y
+
+        // console.log(absx,absy)
 
         if (absx < 0 || absx > this.board.width || absy < 0 || absy > this.board.height) {
             throw new OutOfBoundsException();
@@ -104,15 +106,59 @@ class Plotter
     }
 
     async moveInterpolate(x,y) {
-        let interpolationPrecision = Math.min(Math.abs(x),Math.abs(y));
-        interpolationPrecision = Math.max(interpolationPrecision,1);
+        // let interpolationPrecision = Math.min(Math.abs(x),Math.abs(y));
+        // if (interpolationPrecision === 0) {
+        //     // interpolationPrecision = Math.max(Math.abs(x),Math.abs(y));
+        // } else {
+        //     interpolationPrecision = Math.max(interpolationPrecision, 1);
+        // }
+        //
+        // if (interpolationPrecision > 10) {
+        //     interpolationPrecision /=10;
+        // }
+        //
+        // interpolationPrecision = Math.ceil(interpolationPrecision);
 
-        if (interpolationPrecision > 10) {
-            interpolationPrecision /=10;
+        let dx;
+        let dy;
+        if (Math.abs(x) > Math.abs(y)) {
+            dx = Math.abs(x) / Math.abs(y)
+            dy = 1
+        } else {
+            dx = 1
+            dy = Math.abs(y) / Math.abs(x)
         }
 
-        for(let i=0;i<interpolationPrecision;i++) {
-            await this.move(x/interpolationPrecision, y/interpolationPrecision);
+        dx = Math.max(dx,1);
+        dy = Math.max(dy,1);
+
+        if (isNaN(dy)) {
+            dy = 1;
+        }
+        if (isNaN(dx)) {
+            dx = 1;
+        }
+
+        const jumpLength = Math.hypot(dx,dy);
+        const jumps = Math.hypot(x,y)/jumpLength
+
+        // const segment = longDistance/smallDistance;
+        //
+        // // const ratio = (Math.abs(x) > Math.abs(y)) ? x/y:y/x
+        // const ratio = x/y
+        // const smallTriangleHypo = Math.hypot(1,ratio)
+        //
+        // const jumps = Math.hypot(x,y)/smallTriangleHypo;
+
+        console.log(this.position, {x,y}, {dx,dy}, Math.min(x,y))
+
+        for(let i=0;i<=Math.min(x,y);i++) {
+            let x1 = Math.floor(dx);
+            let y1 = Math.floor(dy);
+
+            // console.log({i, x1, y1})
+
+            await this.move(x1, y1);
         }
     }
 
