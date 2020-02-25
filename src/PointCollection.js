@@ -48,6 +48,31 @@ class PointCollection {
 
         return this;
     }
+
+    getBoundingBox() {
+        const bounding = this.points.reduce(function (boundingBox, point) {
+            return {
+                x: Math.min(boundingBox.x, point.x),
+                y: Math.min(boundingBox.y, point.y),
+                width: Math.max(boundingBox.x, point.x),
+                height: Math.max(boundingBox.y, point.y)
+            }
+        }, {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0
+        })
+
+        if (bounding.x < 0) {
+            bounding.width += Math.abs(bounding.x)
+        }
+        if (bounding.y < 0) {
+            bounding.height += Math.abs(bounding.y)
+        }
+
+        return bounding
+    }
 }
 
 module.exports = PointCollection
