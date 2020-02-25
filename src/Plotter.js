@@ -50,8 +50,8 @@ class Plotter
     // move relative to the current position
     move(x, y) {
 
-        x = Math.round(x);
-        y = Math.round(y);
+        // x = Math.round(x);
+        // y = Math.round(y);
 
         const absx = this.position.x + x
         const absy = this.position.y + y
@@ -62,14 +62,14 @@ class Plotter
             throw new OutOfBoundsException();
         }
 
-        const currentLeftHypo = Math.round(Math.hypot(this.position.x, this.position.y))
-        const currentRightHypo = Math.round(Math.hypot(this.board.width - this.position.x, this.position.y))
+        const currentLeftHypo = Math.hypot(this.position.x, this.position.y)
+        const currentRightHypo = Math.hypot(this.board.width - this.position.x, this.position.y)
 
-        const leftHypo = Math.round(Math.hypot(absx, absy))
-        const rightHypo = Math.round(Math.hypot(this.board.width - absx, absy))
+        const leftHypo = Math.hypot(absx, absy)
+        const rightHypo = Math.hypot(this.board.width - absx, absy)
 
-        let rightLengthDelta = Math.round(Math.abs(rightHypo - currentRightHypo));
-        let leftLengthDelta = Math.round(Math.abs(leftHypo - currentLeftHypo));
+        let rightLengthDelta = Math.abs(rightHypo - currentRightHypo)
+        let leftLengthDelta = Math.abs(leftHypo - currentLeftHypo)
 
         let rightMove;
         let leftMove;
@@ -86,15 +86,15 @@ class Plotter
         }
 
         if(leftHypo > currentLeftHypo) {
-            leftMove = this.leftMotor.reelOut(leftLengthDelta, leftSpeed)
+            leftMove = this.leftMotor.reelOut(Math.round(leftLengthDelta), leftSpeed)
         } else {
-            leftMove = this.leftMotor.reelIn(leftLengthDelta, leftSpeed)
+            leftMove = this.leftMotor.reelIn(Math.round(leftLengthDelta), leftSpeed)
         }
 
         if(rightHypo > currentRightHypo) {
-            rightMove = this.rightMotor.reelOut(rightLengthDelta, rightSpeed)
+            rightMove = this.rightMotor.reelOut(Math.round(rightLengthDelta), rightSpeed)
         } else {
-            rightMove = this.rightMotor.reelIn(rightLengthDelta, rightSpeed)
+            rightMove = this.rightMotor.reelIn(Math.round(rightLengthDelta), rightSpeed)
         }
 
         this.position.x = absx
@@ -119,46 +119,40 @@ class Plotter
         //
         // interpolationPrecision = Math.ceil(interpolationPrecision);
 
-        let dx;
-        let dy;
+        let dx, dy, jumps;
+
         if (Math.abs(x) > Math.abs(y)) {
-            dx = Math.abs(x) / Math.abs(y)
+            dx = x/y
             dy = 1
-        } else {
+            jumps = Math.abs(y)
+        } else if (Math.abs(x) < Math.abs(y)) {
             dx = 1
-            dy = Math.abs(y) / Math.abs(x)
+            dy = y/x
+            jumps = Math.abs(x)
+        } else if (Math.abs(x) === Math.abs(y)) {
+            dx = 1
+            dy = 1
+            jumps = Math.abs(x)
         }
 
-        dx = Math.max(dx,1);
-        dy = Math.max(dy,1);
-
-        if (isNaN(dy)) {
-            dy = 1;
-        }
-        if (isNaN(dx)) {
-            dx = 1;
-        }
-
-        const jumpLength = Math.hypot(dx,dy);
-        const jumps = Math.hypot(x,y)/jumpLength
-
-        // const segment = longDistance/smallDistance;
+        // dx = Math.max(dx,1);
+        // dy = Math.max(dy,1);
         //
-        // // const ratio = (Math.abs(x) > Math.abs(y)) ? x/y:y/x
-        // const ratio = x/y
-        // const smallTriangleHypo = Math.hypot(1,ratio)
-        //
-        // const jumps = Math.hypot(x,y)/smallTriangleHypo;
+        // if (isNaN(dy)) {
+        //     dy = 1;
+        // }
+        // if (isNaN(dx)) {
+        //     dx = 1;
+        // }
 
-        console.log(this.position, {x,y}, {dx,dy}, Math.min(x,y))
+        // if (x < 0) {dx *=-1}
+        // if (y < 0) {dy *=-1}
 
-        for(let i=0;i<=Math.min(x,y);i++) {
-            let x1 = Math.floor(dx);
-            let y1 = Math.floor(dy);
+        console.log(this.position, {x,y}, {dx,dy}, jumps)
 
-            // console.log({i, x1, y1})
-
-            await this.move(x1, y1);
+        for (let i=1; i<=jumps; i++) {
+            console.log(this.position, {dx,dy}, i)
+            await this.move(dx, dy);
         }
     }
 

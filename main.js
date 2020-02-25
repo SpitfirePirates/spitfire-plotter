@@ -25,6 +25,14 @@ async function run () {
     let points1 = [
         { x: 0, y: 0},
         { x: getRandomInt(plotter.board.width), y: getRandomInt(plotter.board.height)},
+        { x: getRandomInt(plotter.board.width), y: getRandomInt(plotter.board.height)},
+        { x: getRandomInt(plotter.board.width), y: getRandomInt(plotter.board.height)},
+        { x: getRandomInt(plotter.board.width), y: getRandomInt(plotter.board.height)},
+        { x: getRandomInt(plotter.board.width), y: getRandomInt(plotter.board.height)},
+        { x: getRandomInt(plotter.board.width), y: getRandomInt(plotter.board.height)},
+        { x: getRandomInt(plotter.board.width), y: getRandomInt(plotter.board.height)},
+        { x: getRandomInt(plotter.board.width), y: getRandomInt(plotter.board.height)},
+        { x: getRandomInt(plotter.board.width), y: getRandomInt(plotter.board.height)},
         { x: 0, y: 0},
     ];
     const points = new PointCollection(points1)
