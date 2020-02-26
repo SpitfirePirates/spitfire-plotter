@@ -60,12 +60,12 @@ class Photo {
 
     *calculateWigglePoints(velocity) {
         let i = 0
-        while (i < this.pixelSize) {
+        while (i < this.pixelSize * 2) {
             yield({
-                x: 10,
+                x: 5,
                 y: Math.sin(this.angle) * velocity * this.pixelSize * 5
             })
-            this.angle += 1
+            this.angle += 2
             i++
         }
     }
