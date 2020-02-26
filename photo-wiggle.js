@@ -9,6 +9,7 @@ async function run () {
 
     const photo = new Photo(plotter, __dirname + '/storage/photo.jpg')
 
+    await plotter.home()
     await plotter.move(500, 500)
     await photo.drawWiggle()
 }
