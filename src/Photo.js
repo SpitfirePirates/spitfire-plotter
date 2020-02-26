@@ -63,7 +63,7 @@ class Photo {
         while (i < this.pixelSize) {
             yield({
                 x: 10,
-                y: Math.sin(this.angle) * velocity * this.pixelSize * 3
+                y: Math.sin(this.angle) * velocity * this.pixelSize * 5
             })
             this.angle += 1
             i++
