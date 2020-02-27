@@ -13,9 +13,11 @@ class Photo {
         this.ySteps = 40
         this.angle = 0
         this.pixelSize = 10
+        this.lineY = 0;
     }
 
     async drawWiggle(path, width = 3000) {
+        this.lineY = this.plotter.position.y
         await this.generateColourMap()
         await this.wiggleGrid()
     }
@@ -47,7 +49,8 @@ class Photo {
                 }
                 x++;
             }
-            this.plotter.move(this.pixelSize * 10 * this.xSteps * -1, this.pixelSize * 10)
+            yield this.nextLinePoint()
+            this.lineY += this.pixelSize * 10
             y++;
         }
     }
@@ -67,6 +70,13 @@ class Photo {
             })
             this.angle += 2
             i++
+        }
+    }
+
+    nextLinePoint() {
+        return {
+            x: this.pixelSize * 10 * this.xSteps * -1,
+            y: (this.lineY - this.plotter.position.y) + (this.pixelSize * 10)
         }
     }
 }
