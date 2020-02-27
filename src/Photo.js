@@ -32,7 +32,7 @@ class Photo {
 
     async wiggleGrid() {
         for (const point of this.wiggleGridIterator()) {
-            await this.plotter.move(point.x, point.y)
+            await this.plotter.move(point.x - this.plotter.position.x, point.y - this.plotter.position.y)
         }
         console.log('done')
     }
@@ -66,8 +66,8 @@ class Photo {
         let i = 0
         while (i < this.pixelSize * 2) {
             yield({
-                x: 5,
-                y: Math.sin(this.angle) * velocity * this.pixelSize * 10
+                x: this.plotter.position.x + 5,
+                y: this.lineY + (Math.sin(this.angle) * velocity * this.pixelSize * 10)
             })
             this.angle += 2
             i++
@@ -76,8 +76,8 @@ class Photo {
 
     nextLinePoint() {
         return {
-            x: this.pixelSize * 10 * this.xSteps * -1,
-            y: (this.lineY - this.plotter.position.y) + (this.pixelSize * 10)
+            x: this.plotter.position.x - (this.pixelSize * 10 * this.xSteps),
+            y: this.lineY + (this.pixelSize * 10)
         }
     }
 }
