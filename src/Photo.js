@@ -51,6 +51,7 @@ class Photo {
             }
             yield this.nextLinePoint()
             this.lineY += this.pixelSize * 10
+            this.angle = 0
             y++;
         }
     }
