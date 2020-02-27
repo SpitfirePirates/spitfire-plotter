@@ -67,9 +67,9 @@ class Photo {
         while (i < this.pixelSize * 2) {
             yield({
                 x: this.plotter.position.x + 5,
-                y: this.lineY + (Math.sin(this.angle) * velocity * this.pixelSize * 10)
+                y: this.lineY + (Math.sin(this.angle) * this.pixelSize * 5)
             })
-            this.angle += 2
+            this.angle += velocity
             i++
         }
     }
