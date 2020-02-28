@@ -39,11 +39,13 @@ class Photo {
 
     *wiggleGridIterator() {
         let y = 0
+        let direction = 1
         while (y < this.ySteps) {
             let x = 0
             while (x < this.xSteps) {
-                const velocity = this.calculateWiggleVelocityAt(x, y)
-                const wigglePoints = this.calculateWigglePoints(velocity)
+                const pixelX = direction === 1 ? x : this.xSteps - x - 1;
+                const velocity = this.calculateWiggleVelocityAt(pixelX, y)
+                const wigglePoints = this.calculateWigglePoints(velocity, direction)
                 for (const point of wigglePoints) {
                     yield point
                 }
@@ -52,6 +54,7 @@ class Photo {
             yield this.nextLinePoint()
             this.lineY += this.pixelSize * 10
             this.angle = 0
+            direction *= -1
             y++;
         }
     }
@@ -62,11 +65,11 @@ class Photo {
         return 1 - (((red * 0.299) + (green * 0.587) + (blue * 0.114)) / 255);
     }
 
-    *calculateWigglePoints(velocity) {
+    *calculateWigglePoints(velocity, direction) {
         let i = 0
         while (i < this.pixelSize * 2) {
             yield({
-                x: this.plotter.position.x + 5,
+                x: this.plotter.position.x + (5 * direction),
                 y: this.lineY + (Math.sin(this.angle) * this.pixelSize * 5)
             })
             this.angle += velocity
@@ -76,7 +79,7 @@ class Photo {
 
     nextLinePoint() {
         return {
-            x: this.plotter.position.x - (this.pixelSize * 10 * this.xSteps),
+            x: this.plotter.position.x,
             y: this.lineY + (this.pixelSize * 10)
         }
     }
