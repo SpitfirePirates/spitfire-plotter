@@ -9,10 +9,10 @@ class Photo {
         this.ctx = this.canvas.getContext('2d')
         this.ctx.imageSmoothingEnabled = false;
         this.ctx.globalCompositeOperation = 'luminosity'
-        this.xSteps = 40
-        this.ySteps = 40
+        this.xPixels = 120
+        this.yPixels = 120
         this.angle = 0
-        this.pixelSize = 10
+        this.pixelSize = 5
         this.lineY = 0;
     }
 
@@ -24,8 +24,8 @@ class Photo {
 
     async generateColourMap() {
         loadImage(this.photoPath).then((image) => {
-            this.ctx.drawImage(image, 0, 0, this.xSteps, this.ySteps)
-            // this.ctx.drawImage(this.canvas, 0, 0, this.xSteps, this.ySteps, 0, 0, 200, 200)
+            this.ctx.drawImage(image, 0, 0, this.xPixels, this.yPixels)
+            // this.ctx.drawImage(this.canvas, 0, 0, this.xPixels, this.yPixels, 0, 0, 200, 200)
             // console.log(this.canvas.toDataURL())
         })
     }
@@ -40,10 +40,10 @@ class Photo {
     *wiggleGridIterator() {
         let y = 0
         let direction = 1
-        while (y < this.ySteps) {
+        while (y < this.yPixels) {
             let x = 0
-            while (x < this.xSteps) {
-                const pixelX = direction === 1 ? x : this.xSteps - x - 1;
+            while (x < this.xPixels) {
+                const pixelX = direction === 1 ? x : this.xPixels - x - 1;
                 const velocity = this.calculateWiggleVelocityAt(pixelX, y)
                 const wigglePoints = this.calculateWigglePoints(velocity, direction)
                 for (const point of wigglePoints) {
