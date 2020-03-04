@@ -10,7 +10,7 @@ class Photo {
         this.ctx.imageSmoothingEnabled = false;
         this.ctx.globalCompositeOperation = 'luminosity'
         this.xPixels = 120
-        this.yPixels = 40
+        this.yPixels = 80
         this.angle = 0
         this.pixelSize = 5
         this.lineY = 0;
@@ -77,13 +77,13 @@ class Photo {
             return 1 - (((red * 0.299) + (green * 0.587) + (blue * 0.114)) / 255);
         }
         if (this.colour === 0) {
-            return 1 - (red / 255);
+            return red / 255;
         }
         if (this.colour === 1) {
-            return 1 - (green / 255);
+            return green / 255;
         }
         if (this.colour === 2) {
-            return 1 - (blue / 255);
+            return blue / 255;
         }
     }
 
