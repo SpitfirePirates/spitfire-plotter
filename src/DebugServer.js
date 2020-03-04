@@ -25,6 +25,11 @@ class DebugServer {
         })
 
         this.pointHistory.push(Object.assign({}, plotter.position))
+
+        plotter.setColour = colour => {
+            const position = { colour: colour }
+            this.pointHistory.push(Object.assign({}, position))
+        }
     }
 
     terminate() {

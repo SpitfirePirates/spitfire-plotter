@@ -10,14 +10,17 @@ class Photo {
         this.ctx.imageSmoothingEnabled = false;
         this.ctx.globalCompositeOperation = 'luminosity'
         this.xPixels = 120
-        this.yPixels = 120
+        this.yPixels = 40
         this.angle = 0
         this.pixelSize = 5
         this.lineY = 0;
+        this.startPosition
+        this.useColour = false
+        this.colour = 0
     }
 
-    async drawWiggle(path, width = 3000) {
-        this.lineY = this.plotter.position.y
+    async drawWiggle() {
+        this.startPosition = Object.assign({}, this.plotter.position)
         await this.generateColourMap()
         await this.wiggleGrid()
     }
@@ -25,8 +28,6 @@ class Photo {
     async generateColourMap() {
         loadImage(this.photoPath).then((image) => {
             this.ctx.drawImage(image, 0, 0, this.xPixels, this.yPixels)
-            // this.ctx.drawImage(this.canvas, 0, 0, this.xPixels, this.yPixels, 0, 0, 200, 200)
-            // console.log(this.canvas.toDataURL())
         })
     }
 
@@ -38,31 +39,52 @@ class Photo {
     }
 
     *wiggleGridIterator() {
-        let y = 0
-        let direction = 1
-        while (y < this.yPixels) {
-            let x = 0
-            while (x < this.xPixels) {
-                const pixelX = direction === 1 ? x : this.xPixels - x - 1;
-                const velocity = this.calculateWiggleVelocityAt(pixelX, y)
-                const wigglePoints = this.calculateWigglePoints(velocity, direction)
-                for (const point of wigglePoints) {
-                    yield point
-                }
-                x++;
+        this.colour = 0
+        const colours = this.useColour ? 3 : 1
+        while (this.colour < colours) {
+            if (this.useColour) {
+                this.setColour()
             }
-            yield this.nextLinePoint()
-            this.lineY += this.pixelSize * 10
-            this.angle = 0
-            direction *= -1
-            y++;
+            let y = 0
+            let direction = 1
+            this.lineY = this.startPosition.y
+            while (y < this.yPixels) {
+                let x = 0
+                while (x < this.xPixels) {
+                    const pixelX = direction === 1 ? x : this.xPixels - x - 1;
+                    const velocity = this.calculateWiggleVelocityAt(pixelX, y)
+                    const wigglePoints = this.calculateWigglePoints(velocity, direction)
+                    for (const point of wigglePoints) {
+                        yield point
+                    }
+                    x++;
+                }
+                yield this.nextLinePoint()
+                this.lineY += this.pixelSize * 10
+                this.angle = 0
+                direction *= -1
+                y++;
+            }
+            yield this.startPosition
+            this.colour++
         }
     }
 
     calculateWiggleVelocityAt(x, y) {
         const [red, green, blue, alpha] = this.ctx.getImageData(x, y, 1, 1).data;
 
-        return 1 - (((red * 0.299) + (green * 0.587) + (blue * 0.114)) / 255);
+        if (this.useColour === false) {
+            return 1 - (((red * 0.299) + (green * 0.587) + (blue * 0.114)) / 255);
+        }
+        if (this.colour === 0) {
+            return 1 - (red / 255);
+        }
+        if (this.colour === 1) {
+            return 1 - (green / 255);
+        }
+        if (this.colour === 2) {
+            return 1 - (blue / 255);
+        }
     }
 
     *calculateWigglePoints(velocity, direction) {
@@ -81,6 +103,18 @@ class Photo {
         return {
             x: this.plotter.position.x,
             y: this.lineY + (this.pixelSize * 10)
+        }
+    }
+
+    setColour() {
+        if (this.colour === 0) {
+            this.plotter.setColour('red')
+        }
+        if (this.colour === 1) {
+            this.plotter.setColour('green')
+        }
+        if (this.colour === 2) {
+            this.plotter.setColour('blue')
         }
     }
 }

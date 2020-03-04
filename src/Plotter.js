@@ -168,6 +168,10 @@ class Plotter
     addTerminateEventHandler(callback) {
         this.terminateEventHandlers.push(callback);
     }
+
+    setColour(colour) {
+        // Can be overridden
+    }
 }
 
 module.exports = Plotter

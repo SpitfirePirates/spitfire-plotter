@@ -122,6 +122,18 @@
             getPoints();
         });
 
+        function setColour(colour) {
+            if (colour === 'red') {
+                boardCtx.strokeStyle = '#ff0000'
+            }
+            if (colour === 'green') {
+                boardCtx.strokeStyle = '#00ff00'
+            }
+            if (colour === 'blue') {
+                boardCtx.strokeStyle = '#0000ff'
+            }
+        }
+
         function getPoints() {
             socket.emit('getPoints', { count: 200 }, points => {
                 if (lastPoint === null) {
@@ -130,10 +142,14 @@
 
                 boardCtx.beginPath()
                 points.forEach(point => {
+                    if (point.colour) {
+                        setColour(point.colour)
+                        points.shift()
+                        return
+                    }
                     boardCtx.moveTo(lastPoint.x/4, lastPoint.y/4)
                     boardCtx.lineTo(point.x/4, point.y/4)
 
-                    points.shift()
                     lastPoint = point;
                 })
                 boardCtx.stroke()
