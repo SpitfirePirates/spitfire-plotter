@@ -1,7 +1,5 @@
-const Plotter = require('./Plotter.js')
-const plotter = new Plotter()
 
-async function square(length = 1000) {
+async function square(plotter, length = 1000) {
     await plotter.move(length, 0)
     await plotter.move(0, length)
     await plotter.move(length * -1, 0)

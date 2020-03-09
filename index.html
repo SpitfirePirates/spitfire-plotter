@@ -115,12 +115,42 @@
         let lastPoint = null;
 
         socket.on('connect', function () {
-            clearCanvas()
+            // clearCanvas()
             document.querySelector('.disconnected').classList.remove('active')
             document.querySelector('.overlay').classList.remove('active')
 
             getPoints();
         });
+
+
+        // const leftLength = 550;
+        // const rightLength = 7000;
+        // const boardWidth = 7500;
+
+
+        // function calcPoint(leftLength, rightLength, boardWidth) {
+        //     let x = (Math.pow(leftLength, 2) - Math.pow(rightLength, 2) + Math.pow(boardWidth, 2)) / (2 * boardWidth);
+        //     let y = Math.sqrt(Math.pow(leftLength, 2) - Math.pow(x, 2));
+        //
+        //     return {x: x, y: y};
+        // }
+
+        // boardCtx.beginPath()
+        // boardCtx.moveTo(0, 0)
+        // for(let i = 0; i < 10; i++) {
+        //
+        //     let point = calcPoint(i*100, 7500-(i*50), 7500);
+        //
+        //     console.log(point.x, point.y);
+        //     boardCtx.lineTo(point.x, point.y)
+        //     boardCtx.stroke()
+        // }
+        //
+        //
+        // boardCtx.closePath();
+
+
+
 
         function getPoints() {
             socket.emit('getPoints', { count: 200 }, points => {
@@ -133,7 +163,8 @@
                     boardCtx.moveTo(lastPoint.x/4, lastPoint.y/4)
                     boardCtx.lineTo(point.x/4, point.y/4)
 
-                    points.shift()
+                    console.log(point)
+
                     lastPoint = point;
                 })
                 boardCtx.stroke()

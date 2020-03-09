@@ -2,8 +2,8 @@
 class OutOfBoundsException extends Error
 {
 
-   constructor() {
-        super('Out of bounds');
+   constructor(position) {
+        super(`{x: ${position.x}, y: ${position.y}} is out of bounds`);
         this.name = 'OutOfBoundsException';
     }
 }

@@ -9,23 +9,13 @@ const walker = new Walker(plotter)
 
 async function run () {
 
-    // shapes.square();
+    // await new Promise((resolve, reject) => {
+    //     setTimeout(resolve, 3000);
+    // })
 
-    // await Shapes.circle(10, 0.5)
-    // await Shapes.circle(10, 0.5)
-    // await Shapes.circle(10, 0.5)
-    // await Shapes.circle(10, 0.5)
-    
-    //await Walker.walkToCenter()
-
-    const points = [
-        { x: 100, y: 100},
-        { x: 200, y: 200},
-        { x: 800, y: 200},
-        { x: 800, y: 600}
-    ]
-
-    await walker.walk(points)
+    await plotter.move(50,300);
+    console.log(111)
+    await plotter.move(150,-250);
 }
 
 run()
