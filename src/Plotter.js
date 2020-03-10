@@ -68,59 +68,92 @@ class Plotter
         const drawLineRightYIntersect = drawLine[1].y - (drawLineSlope * (this.board.width - drawLine[1].x));
 
         // const drawLineLength = Math.sqrt(Math.pow(drawLineXDelta,2) + Math.pow(drawLineYDelta,2));
-
-
-        const segmentLengths = [];
-
-        const segments = [];
-        // const segmentsTotal = Math.ceil(drawLineLength);
-        const segmentsTotal = 15;
-        for(let segmentNumber = 0; segmentNumber < segmentsTotal; segmentNumber++) {
-            segmentLengths.push({left: null, right: null});
-
-            if (segments.length === 0) {
-                segments.push(drawLine[0]);
-
-                continue;
-            }
-
-            const lastSegment = segments[segments.length - 1];
-
-            segments.push({x: lastSegment.x + (drawLineXDelta / segmentsTotal),y: lastSegment.y + (drawLineYDelta / segmentsTotal)});
-        }
+        //
+        //
+        // const segmentLengths = [];
+        //
+        // const segments = [];
+        // // const segmentsTotal = Math.ceil(drawLineLength);
+        // const segmentsTotal = 15;
+        // for(let segmentNumber = 0; segmentNumber < segmentsTotal; segmentNumber++) {
+        //     segmentLengths.push({left: null, right: null});
+        //
+        //     if (segments.length === 0) {
+        //         segments.push(drawLine[0]);
+        //
+        //         continue;
+        //     }
+        //
+        //     const lastSegment = segments[segments.length - 1];
+        //
+        //     segments.push({x: lastSegment.x + (drawLineXDelta / segmentsTotal),y: lastSegment.y + (drawLineYDelta / segmentsTotal)});
+        // }
 
         const drawLineMinLeftPoint = {
             x: (-drawLineSlope * drawLineYIntersect)/(Math.pow(drawLineSlope,2) + 1),
             y: drawLineYIntersect/(Math.pow(drawLineSlope,2) + 1)
         };
 
+        const leftStartAngle = Math.atan(drawLine[0].x/drawLine[0].y);
+        const leftEndAngle = Math.atan(drawLine[1].x/drawLine[1].y);
+        const leftMinPointDistance = Math.sqrt(Math.pow(drawLineMinLeftPoint.x,2) + (Math.pow(drawLineMinLeftPoint.x,2)));
+
         const drawLineMinRightPoint = {
             x: (-drawLineRightSlope * drawLineRightYIntersect)/(Math.pow(drawLineRightSlope,2) + 1),
             y: drawLineRightYIntersect/(Math.pow(drawLineRightSlope,2) + 1)
         };
 
+        const rightStartAngle = Math.atan((this.board.width - drawLine[0].x)/drawLine[0].y);
+        const rightEndAngle = Math.atan((this.board.width - drawLine[1].x)/drawLine[1].y);
+        const rightMinPointDistance = Math.sqrt(Math.pow((this.board.width - drawLineMinRightPoint.x),2) + (Math.pow((this.board.width - drawLineMinRightPoint.x),2)));
 
-        const leftMotorToCentreOfDrawLine = [
-            {x: 0,y: 0},
-            // {
-            //     x: (Math.abs(drawLineXDelta)/2) + Math.min(drawLine[0].x,drawLine[1].x),
-            //     y: (Math.abs(drawLineYDelta)/2) + Math.min(drawLine[0].y,drawLine[1].y),
-            // },
-            drawLineMinLeftPoint
-        ];
+        const minStep = 1;
+        let i, newLength,lastLength,stepSize;
+
+        for (i=0;i<1; i+=0.001) {
+            const leftNewLength = (leftMinPointDistance/Math.cos(leftStartAngle+i));
+            const rightNewLength = (rightMinPointDistance/Math.cos(rightStartAngle+i));
+
+            if (typeof lastLength === 'undefined') {
+                lastLength = leftNewLength;
+                continue;
+            }
+
+            stepSize = lastLength-leftNewLength;
+
+            if (Math.abs(stepSize) >= minStep) {
+                break;
+            }
+
+            // lastLength = newLength;
+        }
+
+        console.log(i, stepSize);
 
 
-        const leftMotorToCentreOfDrawLineXDelta = leftMotorToCentreOfDrawLine[0].x - leftMotorToCentreOfDrawLine[1].x;
-        const leftMotorToCentreOfDrawLineYDelta = leftMotorToCentreOfDrawLine[0].y - leftMotorToCentreOfDrawLine[1].y;
 
-        const leftMotorToCentreOfDrawLineLength = Math.sqrt(Math.pow(leftMotorToCentreOfDrawLineXDelta,2) + Math.pow(leftMotorToCentreOfDrawLineYDelta,2));
 
-        const leftCircleCentre = {
-            x: leftMotorToCentreOfDrawLine[1].x / 2,
-            y: leftMotorToCentreOfDrawLine[1].y / 2,
-        };
+        // const leftMotorToCentreOfDrawLine = [
+        //     {x: 0,y: 0},
+        //     // {
+        //     //     x: (Math.abs(drawLineXDelta)/2) + Math.min(drawLine[0].x,drawLine[1].x),
+        //     //     y: (Math.abs(drawLineYDelta)/2) + Math.min(drawLine[0].y,drawLine[1].y),
+        //     // },
+        //     drawLineMinLeftPoint
+        // ];
 
-        const leftCircleRadius = leftMotorToCentreOfDrawLineLength;
+        //
+        // const leftMotorToCentreOfDrawLineXDelta = leftMotorToCentreOfDrawLine[0].x - leftMotorToCentreOfDrawLine[1].x;
+        // const leftMotorToCentreOfDrawLineYDelta = leftMotorToCentreOfDrawLine[0].y - leftMotorToCentreOfDrawLine[1].y;
+        //
+        // const leftMotorToCentreOfDrawLineLength = Math.sqrt(Math.pow(leftMotorToCentreOfDrawLineXDelta,2) + Math.pow(leftMotorToCentreOfDrawLineYDelta,2));
+        //
+        // const leftCircleCentre = {
+        //     x: leftMotorToCentreOfDrawLine[1].x / 2,
+        //     y: leftMotorToCentreOfDrawLine[1].y / 2,
+        // };
+        //
+        // const leftCircleRadius = leftMotorToCentreOfDrawLineLength;
 
         // console.log(leftCircleRadius)
 
@@ -128,111 +161,111 @@ class Plotter
 
 
 
-        const rightMotorToCentreOfDrawLine = [
-            {x: this.board.width,y: 0},
-            // {
-            //     x: (Math.abs(drawLineXDelta)/2) + Math.min(drawLine[0].x, drawLine[1].x),
-            //     y: (Math.abs(drawLineYDelta)/2) + Math.min(drawLine[0].y, drawLine[1].y),
-            // },
-            drawLineMinRightPoint
-        ];
-
-        const rightMotorToCentreOfDrawLineXDelta = rightMotorToCentreOfDrawLine[0].x - rightMotorToCentreOfDrawLine[1].x;
-        const rightMotorToCentreOfDrawLineYDelta = rightMotorToCentreOfDrawLine[0].y - rightMotorToCentreOfDrawLine[1].y;
-
-        const rightMotorToCentreOfDrawLineLength = Math.sqrt(Math.pow(rightMotorToCentreOfDrawLineXDelta,2) + Math.pow(rightMotorToCentreOfDrawLineYDelta,2));
-
-        const rightCircleCentre = {
-            x: rightMotorToCentreOfDrawLine[1].x / 2,
-            y: rightMotorToCentreOfDrawLine[1].y / 2,
-        };
-
-        const rightCircleRadius = rightMotorToCentreOfDrawLineLength /2;
-
-
+        // const rightMotorToCentreOfDrawLine = [
+        //     {x: this.board.width,y: 0},
+        //     // {
+        //     //     x: (Math.abs(drawLineXDelta)/2) + Math.min(drawLine[0].x, drawLine[1].x),
+        //     //     y: (Math.abs(drawLineYDelta)/2) + Math.min(drawLine[0].y, drawLine[1].y),
+        //     // },
+        //     drawLineMinRightPoint
+        // ];
+        //
+        // const rightMotorToCentreOfDrawLineXDelta = rightMotorToCentreOfDrawLine[0].x - rightMotorToCentreOfDrawLine[1].x;
+        // const rightMotorToCentreOfDrawLineYDelta = rightMotorToCentreOfDrawLine[0].y - rightMotorToCentreOfDrawLine[1].y;
+        //
+        // const rightMotorToCentreOfDrawLineLength = Math.sqrt(Math.pow(rightMotorToCentreOfDrawLineXDelta,2) + Math.pow(rightMotorToCentreOfDrawLineYDelta,2));
+        //
+        // const rightCircleCentre = {
+        //     x: rightMotorToCentreOfDrawLine[1].x / 2,
+        //     y: rightMotorToCentreOfDrawLine[1].y / 2,
+        // };
+        //
+        // const rightCircleRadius = rightMotorToCentreOfDrawLineLength /2;
 
 
 
 
-        let leftSegmentCount = 0;
-        segments.forEach(segment => {
-            const leftMotorToDrawLineLength = Math.sqrt(Math.pow(segment.x,2) + Math.pow(segment.y,2));
-            const leftMotorToDrawLineSlope = segment.y / segment.x;
-            const leftMotorToDrawLineYIntercept = segment.y - (leftMotorToDrawLineSlope * segment.x);
-
-            const leftMotorToCircleXs = this.findCircleLineIntersections(leftCircleRadius, leftCircleCentre.x, leftCircleCentre.y, leftMotorToDrawLineSlope, leftMotorToDrawLineYIntercept)
-            const leftMotorToCircleX = Math.max(...leftMotorToCircleXs);
-
-            const leftMotorToCircleY = leftMotorToDrawLineSlope * leftMotorToCircleX + leftMotorToDrawLineYIntercept;
-
-            let leftIntersectLength = Math.sqrt(Math.pow(leftMotorToCircleX,2) + Math.pow(leftMotorToCircleY,2));
-
-            if (isNaN(leftIntersectLength)) {
-                leftIntersectLength = 0;
-            }
-
-            const leftLengthDelta = leftMotorToDrawLineLength - leftIntersectLength;
-
-            segmentLengths[leftSegmentCount].left = Math.abs(leftLengthDelta);
-
-            leftSegmentCount++;
-        });
 
 
-
-        let rightSegmentCount = 0;
-        segments
-            .map(({x, y}) => {
-                return {x: this.board.width - x, y: y};
-            })
-            .forEach(segment => {
-                const rightMotorToDrawLineLength = Math.sqrt(Math.pow(segment.x,2) + Math.pow(segment.y,2));
-                const rightMotorToDrawLineSlope = segment.y / segment.x;
-                const rightMotorToDrawLineYIntercept = segment.y - (rightMotorToDrawLineSlope * segment.x);
-
-                const rightMotorToCircleXs = this.findCircleLineIntersections(rightCircleRadius, rightCircleCentre.x, rightCircleCentre.y, rightMotorToDrawLineSlope, rightMotorToDrawLineYIntercept)
-                const rightMotorToCircleX = Math.max(...rightMotorToCircleXs);
-
-                const rightMotorToCircleY = rightMotorToDrawLineSlope * rightMotorToCircleX + rightMotorToDrawLineYIntercept;
-
-                const rightIntersectLength = Math.sqrt(Math.pow(rightMotorToCircleX,2) + Math.pow(rightMotorToCircleY,2));
-
-                const rightLengthDelta = rightMotorToDrawLineLength - rightIntersectLength;
-
-                segmentLengths[rightSegmentCount].right = Math.abs(rightLengthDelta);
-
-                rightSegmentCount++
-            });
-
-        console.log(segmentLengths);
-
-        for(let moveNumber = 1; moveNumber < segmentLengths.length; moveNumber++) {
-
-            let leftDelta = segmentLengths[moveNumber-1].left - segmentLengths[moveNumber].left;
-            let rightDelta = segmentLengths[moveNumber].right - segmentLengths[moveNumber-1].right;
-
-            console.log(leftDelta, rightDelta);
-
-            const moveTime = 1000;
-
-            let leftMove, rightMove;
-
-            if (leftDelta < 0) {
-                leftMove = this.leftMotor.reelOut(Math.abs(leftDelta), moveTime/Math.abs(leftDelta));
-            } else {
-                leftMove = this.leftMotor.reelIn(Math.abs(leftDelta), moveTime/Math.abs(leftDelta));
-            }
-            
-            if (rightDelta > 0) {
-                rightMove = this.rightMotor.reelOut(Math.abs(rightDelta), moveTime/Math.abs(rightDelta));
-            } else {
-                rightMove = this.rightMotor.reelIn(Math.abs(rightDelta), moveTime/Math.abs(rightDelta));
-            }
-
-            await Promise.all([leftMove,rightMove])
-
-            // console.log(this.leftMotor.length, this.rightMotor.length)
-        }
+        // let leftSegmentCount = 0;
+        // segments.forEach(segment => {
+        //     const leftMotorToDrawLineLength = Math.sqrt(Math.pow(segment.x,2) + Math.pow(segment.y,2));
+        //     const leftMotorToDrawLineSlope = segment.y / segment.x;
+        //     const leftMotorToDrawLineYIntercept = segment.y - (leftMotorToDrawLineSlope * segment.x);
+        //
+        //     const leftMotorToCircleXs = this.findCircleLineIntersections(leftCircleRadius, leftCircleCentre.x, leftCircleCentre.y, leftMotorToDrawLineSlope, leftMotorToDrawLineYIntercept)
+        //     const leftMotorToCircleX = Math.max(...leftMotorToCircleXs);
+        //
+        //     const leftMotorToCircleY = leftMotorToDrawLineSlope * leftMotorToCircleX + leftMotorToDrawLineYIntercept;
+        //
+        //     let leftIntersectLength = Math.sqrt(Math.pow(leftMotorToCircleX,2) + Math.pow(leftMotorToCircleY,2));
+        //
+        //     if (isNaN(leftIntersectLength)) {
+        //         leftIntersectLength = 0;
+        //     }
+        //
+        //     const leftLengthDelta = leftMotorToDrawLineLength - leftIntersectLength;
+        //
+        //     segmentLengths[leftSegmentCount].left = Math.abs(leftLengthDelta);
+        //
+        //     leftSegmentCount++;
+        // });
+        //
+        //
+        //
+        // let rightSegmentCount = 0;
+        // segments
+        //     .map(({x, y}) => {
+        //         return {x: this.board.width - x, y: y};
+        //     })
+        //     .forEach(segment => {
+        //         const rightMotorToDrawLineLength = Math.sqrt(Math.pow(segment.x,2) + Math.pow(segment.y,2));
+        //         const rightMotorToDrawLineSlope = segment.y / segment.x;
+        //         const rightMotorToDrawLineYIntercept = segment.y - (rightMotorToDrawLineSlope * segment.x);
+        //
+        //         const rightMotorToCircleXs = this.findCircleLineIntersections(rightCircleRadius, rightCircleCentre.x, rightCircleCentre.y, rightMotorToDrawLineSlope, rightMotorToDrawLineYIntercept)
+        //         const rightMotorToCircleX = Math.max(...rightMotorToCircleXs);
+        //
+        //         const rightMotorToCircleY = rightMotorToDrawLineSlope * rightMotorToCircleX + rightMotorToDrawLineYIntercept;
+        //
+        //         const rightIntersectLength = Math.sqrt(Math.pow(rightMotorToCircleX,2) + Math.pow(rightMotorToCircleY,2));
+        //
+        //         const rightLengthDelta = rightMotorToDrawLineLength - rightIntersectLength;
+        //
+        //         segmentLengths[rightSegmentCount].right = Math.abs(rightLengthDelta);
+        //
+        //         rightSegmentCount++
+        //     });
+        //
+        // console.log(segmentLengths);
+        //
+        // for(let moveNumber = 1; moveNumber < segmentLengths.length; moveNumber++) {
+        //
+        //     let leftDelta = segmentLengths[moveNumber-1].left - segmentLengths[moveNumber].left;
+        //     let rightDelta = segmentLengths[moveNumber].right - segmentLengths[moveNumber-1].right;
+        //
+        //     console.log(leftDelta, rightDelta);
+        //
+        //     const moveTime = 1000;
+        //
+        //     let leftMove, rightMove;
+        //
+        //     if (leftDelta < 0) {
+        //         leftMove = this.leftMotor.reelOut(Math.abs(leftDelta), moveTime/Math.abs(leftDelta));
+        //     } else {
+        //         leftMove = this.leftMotor.reelIn(Math.abs(leftDelta), moveTime/Math.abs(leftDelta));
+        //     }
+        //
+        //     if (rightDelta > 0) {
+        //         rightMove = this.rightMotor.reelOut(Math.abs(rightDelta), moveTime/Math.abs(rightDelta));
+        //     } else {
+        //         rightMove = this.rightMotor.reelIn(Math.abs(rightDelta), moveTime/Math.abs(rightDelta));
+        //     }
+        //
+        //     await Promise.all([leftMove,rightMove])
+        //
+        //     // console.log(this.leftMotor.length, this.rightMotor.length)
+        // }
 
 
 
