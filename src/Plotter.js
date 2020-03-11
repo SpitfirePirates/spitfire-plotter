@@ -43,7 +43,7 @@ class Plotter
         this.addMoveEventHandler(position => console.log(position))
 
         if (debug) {
-            new DebugServer(this);
+            // new DebugServer(this);
         }
     }
 
@@ -60,6 +60,9 @@ class Plotter
 
         const drawLineXDelta = drawLine[1].x - drawLine[0].x;
         const drawLineYDelta = drawLine[1].y - drawLine[0].y;
+
+        const drawLineXSign = drawLineXDelta > 0 ? 1:-1;
+        const drawLineYSign = drawLineYDelta > 0 ? 1:-1;
 
         const drawLineSlope = drawLineYDelta / drawLineXDelta;
         const drawLineYIntersect = drawLine[1].y - (drawLineSlope * drawLine[1].x);
@@ -97,6 +100,7 @@ class Plotter
         const leftStartAngle = Math.atan(drawLine[0].x/drawLine[0].y);
         const leftEndAngle = Math.atan(drawLine[1].x/drawLine[1].y);
         const leftMinPointDistance = Math.sqrt(Math.pow(drawLineMinLeftPoint.x,2) + (Math.pow(drawLineMinLeftPoint.x,2)));
+        const leftStartPointDistance = Math.sqrt(Math.pow(drawLine[0].x,2) + (Math.pow(drawLine[0].y,2)));
 
         const drawLineMinRightPoint = {
             x: (-drawLineRightSlope * drawLineRightYIntersect)/(Math.pow(drawLineRightSlope,2) + 1),
@@ -106,29 +110,54 @@ class Plotter
         const rightStartAngle = Math.atan((this.board.width - drawLine[0].x)/drawLine[0].y);
         const rightEndAngle = Math.atan((this.board.width - drawLine[1].x)/drawLine[1].y);
         const rightMinPointDistance = Math.sqrt(Math.pow((this.board.width - drawLineMinRightPoint.x),2) + (Math.pow((this.board.width - drawLineMinRightPoint.x),2)));
+        const rightDistanceToStartPoint = Math.sqrt(Math.pow(this.board.width - drawLine[0].x,2) + (Math.pow(drawLine[0].y,2)));
 
-        const minStep = 1;
-        let i, newLength,lastLength,stepSize;
+        let precision = 1;
 
-        for (i=0;i<1; i+=0.001) {
-            const leftNewLength = (leftMinPointDistance/Math.cos(leftStartAngle+i));
-            const rightNewLength = (rightMinPointDistance/Math.cos(rightStartAngle+i));
-
-            if (typeof lastLength === 'undefined') {
-                lastLength = leftNewLength;
-                continue;
-            }
-
-            stepSize = lastLength-leftNewLength;
-
-            if (Math.abs(stepSize) >= minStep) {
-                break;
-            }
-
-            // lastLength = newLength;
+        if (leftStartPointDistance > leftMinPointDistance) {
+            precision *= -1;
         }
 
-        console.log(i, stepSize);
+        if (drawLineYSign === 1 && drawLineXSign === 1) {
+            stepDirection = 1;
+        }
+
+        if (drawLineYSign === -1 && drawLineXSign === -1) {
+            stepDirection = -1;
+        }
+
+
+        // const precision = 1;
+
+        const leftSingleStepAngle = Math.acos(leftMinPointDistance/(leftStartPointDistance-precision));
+        const rightSingleStepAngle = Math.acos(rightMinPointDistance/(rightDistanceToStartPoint-precision));
+
+        console.log(leftStartPointDistance, leftSingleStepAngle);
+        console.log(rightDistanceToStartPoint, rightSingleStepAngle);
+
+
+        // const minStep = 1;
+        // let i, newLength,lastLength,stepSize;
+        //
+        // for (i=0;i<1; i+=0.001) {
+        //     const leftNewLength = (leftMinPointDistance/Math.cos(leftStartAngle+i));
+        //     const rightNewLength = (rightMinPointDistance/Math.cos(rightStartAngle+i));
+        //
+        //     if (typeof lastLength === 'undefined') {
+        //         lastLength = leftNewLength;
+        //         continue;
+        //     }
+        //
+        //     stepSize = lastLength-leftNewLength;
+        //
+        //     if (Math.abs(stepSize) >= minStep) {
+        //         break;
+        //     }
+        //
+        //     // lastLength = newLength;
+        // }
+        //
+        // console.log(i, stepSize);
 
 
 
