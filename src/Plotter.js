@@ -67,6 +67,8 @@ class Plotter
         const drawLineSlope = drawLineYDelta / drawLineXDelta;
         const drawLineYIntersect = drawLine[1].y - (drawLineSlope * drawLine[1].x);
 
+        console.log('left line', drawLineSlope, drawLineYIntersect);
+
         const drawLineRightSlope = drawLineYDelta / (this.board.width - drawLineXDelta);
         const drawLineRightYIntersect = drawLine[1].y - (drawLineSlope * (this.board.width - drawLine[1].x));
 
@@ -93,15 +95,24 @@ class Plotter
         // }
 
         const leftPerpendicularPoint = {
-            x: (-drawLineSlope * drawLineYIntersect)/(Math.pow(drawLineSlope,2) + 1),
+            x: -drawLineSlope * drawLineYIntersect/(Math.pow(drawLineSlope,2) + 1),
             y: drawLineYIntersect/(Math.pow(drawLineSlope,2) + 1)
         };
 
-        const leftStartAngle = Math.atan(drawLine[0].x/drawLine[0].y);
+        console.log('drawline', drawLine);
+
+        let leftStartAngle = Math.atan(drawLine[0].x/drawLine[0].y);
+        if (isNaN(leftStartAngle)) {
+            leftStartAngle = 0;
+        }
         const leftEndAngle = Math.atan(drawLine[1].x/drawLine[1].y);
         const leftPerpendicularPointDistance = Math.sqrt(Math.pow(leftPerpendicularPoint.x,2) + (Math.pow(leftPerpendicularPoint.x,2)));
         const leftStartPointDistance = Math.sqrt(Math.pow(drawLine[0].x,2) + (Math.pow(drawLine[0].y,2)));
         const leftEndPointDistance = Math.sqrt(Math.pow(drawLine[1].x,2) + (Math.pow(drawLine[1].y,2)));
+
+        // console.log('perp point', leftPerpendicularPoint);
+        console.log('distances', leftStartPointDistance, leftPerpendicularPointDistance, leftEndPointDistance);
+        console.log('angles', leftStartAngle, leftEndAngle)
 
         const drawLineMinRightPoint = {
             x: (-drawLineRightSlope * drawLineRightYIntersect)/(Math.pow(drawLineRightSlope,2) + 1),
@@ -113,7 +124,7 @@ class Plotter
         const rightMinPointDistance = Math.sqrt(Math.pow((this.board.width - drawLineMinRightPoint.x),2) + (Math.pow((this.board.width - drawLineMinRightPoint.x),2)));
         const rightDistanceToStartPoint = Math.sqrt(Math.pow(this.board.width - drawLine[0].x,2) + (Math.pow(drawLine[0].y,2)));
 
-        let precision = 5;
+        let precision = 4;
 
         if (leftStartPointDistance > leftPerpendicularPointDistance && leftEndPointDistance > leftPerpendicularPointDistance) {
             precision *= -1;
@@ -123,14 +134,40 @@ class Plotter
             precision *= 1;
         }
 
+        let leftLength = Math.round(leftStartPointDistance);
+        for (let i=0; i<100; i++) {
+            let distanceAlongMoveLine;
+            leftLength += precision;
+
+            if (leftPerpendicularPointDistance === 0) {
+                distanceAlongMoveLine = leftLength;
+            } else {
+                let newAngle = Math.acos(leftPerpendicularPointDistance/leftLength);
+                distanceAlongMoveLine = Math.sin(newAngle) * leftPerpendicularPointDistance;
+                // leftLength = (leftPerpendicularPointDistance/Math.cos(leftStartAngle+moveDistance));
+
+                if (isNaN(newAngle)) {
+                    precision *= -1;
+                    continue;
+                }
+
+                if (newAngle >= leftEndAngle) {
+                    break;
+                }
+            }
+
+            // console.log(i, leftLength, distanceAlongMoveLine);
+
+        }
+
 
         // const precision = 1;
 
-        const leftSingleStepAngle = Math.acos(leftPerpendicularPointDistance/(leftStartPointDistance-precision));
-        const rightSingleStepAngle = Math.acos(rightMinPointDistance/(rightDistanceToStartPoint-precision));
+        // const leftSingleStepAngle = Math.acos(leftPerpendicularPointDistance/(leftStartPointDistance-precision));
+        // const rightSingleStepAngle = Math.acos(rightMinPointDistance/(rightDistanceToStartPoint-precision));
 
-        console.log(leftStartPointDistance, leftSingleStepAngle);
-        console.log(rightDistanceToStartPoint, rightSingleStepAngle);
+        // console.log(leftStartPointDistance, leftSingleStepAngle);
+        // console.log(rightDistanceToStartPoint, rightSingleStepAngle);
 
 
         // const minStep = 1;
