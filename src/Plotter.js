@@ -92,15 +92,16 @@ class Plotter
         //     segments.push({x: lastSegment.x + (drawLineXDelta / segmentsTotal),y: lastSegment.y + (drawLineYDelta / segmentsTotal)});
         // }
 
-        const drawLineMinLeftPoint = {
+        const leftPerpendicularPoint = {
             x: (-drawLineSlope * drawLineYIntersect)/(Math.pow(drawLineSlope,2) + 1),
             y: drawLineYIntersect/(Math.pow(drawLineSlope,2) + 1)
         };
 
         const leftStartAngle = Math.atan(drawLine[0].x/drawLine[0].y);
         const leftEndAngle = Math.atan(drawLine[1].x/drawLine[1].y);
-        const leftMinPointDistance = Math.sqrt(Math.pow(drawLineMinLeftPoint.x,2) + (Math.pow(drawLineMinLeftPoint.x,2)));
+        const leftPerpendicularPointDistance = Math.sqrt(Math.pow(leftPerpendicularPoint.x,2) + (Math.pow(leftPerpendicularPoint.x,2)));
         const leftStartPointDistance = Math.sqrt(Math.pow(drawLine[0].x,2) + (Math.pow(drawLine[0].y,2)));
+        const leftEndPointDistance = Math.sqrt(Math.pow(drawLine[1].x,2) + (Math.pow(drawLine[1].y,2)));
 
         const drawLineMinRightPoint = {
             x: (-drawLineRightSlope * drawLineRightYIntersect)/(Math.pow(drawLineRightSlope,2) + 1),
@@ -112,24 +113,20 @@ class Plotter
         const rightMinPointDistance = Math.sqrt(Math.pow((this.board.width - drawLineMinRightPoint.x),2) + (Math.pow((this.board.width - drawLineMinRightPoint.x),2)));
         const rightDistanceToStartPoint = Math.sqrt(Math.pow(this.board.width - drawLine[0].x,2) + (Math.pow(drawLine[0].y,2)));
 
-        let precision = 1;
+        let precision = 5;
 
-        if (leftStartPointDistance > leftMinPointDistance) {
+        if (leftStartPointDistance > leftPerpendicularPointDistance && leftEndPointDistance > leftPerpendicularPointDistance) {
             precision *= -1;
-        }
-
-        if (drawLineYSign === 1 && drawLineXSign === 1) {
-            stepDirection = 1;
-        }
-
-        if (drawLineYSign === -1 && drawLineXSign === -1) {
-            stepDirection = -1;
+        } else if (leftStartPointDistance > leftEndPointDistance) {
+            precision *= -1;
+        } else {
+            precision *= 1;
         }
 
 
         // const precision = 1;
 
-        const leftSingleStepAngle = Math.acos(leftMinPointDistance/(leftStartPointDistance-precision));
+        const leftSingleStepAngle = Math.acos(leftPerpendicularPointDistance/(leftStartPointDistance-precision));
         const rightSingleStepAngle = Math.acos(rightMinPointDistance/(rightDistanceToStartPoint-precision));
 
         console.log(leftStartPointDistance, leftSingleStepAngle);
@@ -140,7 +137,7 @@ class Plotter
         // let i, newLength,lastLength,stepSize;
         //
         // for (i=0;i<1; i+=0.001) {
-        //     const leftNewLength = (leftMinPointDistance/Math.cos(leftStartAngle+i));
+        //     const leftNewLength = (leftPerpendicularPointDistance/Math.cos(leftStartAngle+i));
         //     const rightNewLength = (rightMinPointDistance/Math.cos(rightStartAngle+i));
         //
         //     if (typeof lastLength === 'undefined') {
@@ -168,7 +165,7 @@ class Plotter
         //     //     x: (Math.abs(drawLineXDelta)/2) + Math.min(drawLine[0].x,drawLine[1].x),
         //     //     y: (Math.abs(drawLineYDelta)/2) + Math.min(drawLine[0].y,drawLine[1].y),
         //     // },
-        //     drawLineMinLeftPoint
+        //     leftPerpendicularPoint
         // ];
 
         //
