@@ -64,13 +64,12 @@ class Plotter
         const drawLineXSign = drawLineXDelta > 0 ? 1:-1;
         const drawLineYSign = drawLineYDelta > 0 ? 1:-1;
 
-        const drawLineSlope = drawLineYDelta / drawLineXDelta;
-        const drawLineYIntersect = drawLine[1].y - (drawLineSlope * drawLine[1].x);
+        const drawLineLeftSlope = drawLineYDelta / drawLineXDelta;
+        const drawLineLeftYIntersect = drawLine[1].y - (drawLineLeftSlope * drawLine[1].x);
 
-        console.log('left line', drawLineSlope, drawLineYIntersect);
+        const drawLineRightSlope = - drawLineYDelta / drawLineXDelta;
+        const drawLineRightYIntersect = drawLine[1].y - (drawLineRightSlope * (this.board.width - drawLine[1].x));
 
-        const drawLineRightSlope = drawLineYDelta / (this.board.width - drawLineXDelta);
-        const drawLineRightYIntersect = drawLine[1].y - (drawLineSlope * (this.board.width - drawLine[1].x));
 
         // const drawLineLength = Math.sqrt(Math.pow(drawLineXDelta,2) + Math.pow(drawLineYDelta,2));
         //
@@ -95,8 +94,8 @@ class Plotter
         // }
 
         const leftPerpendicularPoint = {
-            x: -drawLineSlope * drawLineYIntersect/(Math.pow(drawLineSlope,2) + 1),
-            y: drawLineYIntersect/(Math.pow(drawLineSlope,2) + 1)
+            x: -drawLineLeftSlope * drawLineLeftYIntersect/(Math.pow(drawLineLeftSlope,2) + 1),
+            y: drawLineLeftYIntersect/(Math.pow(drawLineLeftSlope,2) + 1)
         };
 
         console.log('drawline', drawLine);
@@ -106,38 +105,47 @@ class Plotter
             leftStartAngle = 0;
         }
         const leftEndAngle = Math.atan(drawLine[1].x/drawLine[1].y);
-        const leftPerpendicularPointDistance = Math.sqrt(Math.pow(leftPerpendicularPoint.x,2) + (Math.pow(leftPerpendicularPoint.x,2)));
+        const leftPerpendicularPointDistance = Math.sqrt(Math.pow(leftPerpendicularPoint.x,2) + (Math.pow(leftPerpendicularPoint.y,2)));
         const leftStartPointDistance = Math.sqrt(Math.pow(drawLine[0].x,2) + (Math.pow(drawLine[0].y,2)));
         const leftEndPointDistance = Math.sqrt(Math.pow(drawLine[1].x,2) + (Math.pow(drawLine[1].y,2)));
 
         // console.log('perp point', leftPerpendicularPoint);
-        console.log('distances', leftStartPointDistance, leftPerpendicularPointDistance, leftEndPointDistance);
-        console.log('angles', leftStartAngle, leftEndAngle)
 
-        const drawLineMinRightPoint = {
-            x: (-drawLineRightSlope * drawLineRightYIntersect)/(Math.pow(drawLineRightSlope,2) + 1),
+        const rightPerpendicularPoint = {
+            x: this.board.width - ((-drawLineRightSlope * drawLineRightYIntersect)/(Math.pow(drawLineRightSlope,2) + 1)),
             y: drawLineRightYIntersect/(Math.pow(drawLineRightSlope,2) + 1)
         };
 
-        const rightStartAngle = Math.atan((this.board.width - drawLine[0].x)/drawLine[0].y);
-        const rightEndAngle = Math.atan((this.board.width - drawLine[1].x)/drawLine[1].y);
-        const rightMinPointDistance = Math.sqrt(Math.pow((this.board.width - drawLineMinRightPoint.x),2) + (Math.pow((this.board.width - drawLineMinRightPoint.x),2)));
-        const rightDistanceToStartPoint = Math.sqrt(Math.pow(this.board.width - drawLine[0].x,2) + (Math.pow(drawLine[0].y,2)));
+        // console.log(rightPerpendicularPoint);
 
-        let precision = 4;
+        // const rightStartAngle = Math.atan(drawLine[0].y/(this.board.width - drawLine[0].x));
+        // const rightEndAngle = Math.atan(drawLine[1].y/(this.board.width - drawLine[1].x));
+        const rightPerpendicularPointDistance = Math.sqrt(Math.pow((this.board.width - rightPerpendicularPoint.x),2) + (Math.pow(rightPerpendicularPoint.y,2)));
+        const rightStartPointDistance = Math.sqrt(Math.pow(this.board.width - drawLine[0].x,2) + (Math.pow(drawLine[0].y,2)));
+        const rightEndPointDistance = Math.sqrt(Math.pow(this.board.width - drawLine[1].x,2) + (Math.pow(drawLine[1].y,2)));
+        const rightStartAngle = Math.acos(rightPerpendicularPointDistance/rightStartPointDistance);
+        const rightEndAngle = Math.acos(rightPerpendicularPointDistance/rightEndPointDistance);
+
+        console.log('distancesR', rightStartPointDistance, rightPerpendicularPointDistance, rightEndPointDistance);
+        // console.log('distancesL', leftStartPointDistance, leftPerpendicularPointDistance, leftEndPointDistance);
+        console.log('angles', rightStartAngle, rightEndAngle)
+
+        let precision = 1;
+        
+        let leftPrecision = precision;
 
         if (leftStartPointDistance > leftPerpendicularPointDistance && leftEndPointDistance > leftPerpendicularPointDistance) {
-            precision *= -1;
+            leftPrecision *= -1;
         } else if (leftStartPointDistance > leftEndPointDistance) {
-            precision *= -1;
+            leftPrecision *= -1;
         } else {
-            precision *= 1;
+            leftPrecision *= 1;
         }
 
         let leftLength = Math.round(leftStartPointDistance);
         for (let i=0; i<100; i++) {
             let distanceAlongMoveLine;
-            leftLength += precision;
+            leftLength += leftPrecision;
 
             if (leftPerpendicularPointDistance === 0) {
                 distanceAlongMoveLine = leftLength;
@@ -147,7 +155,7 @@ class Plotter
                 // leftLength = (leftPerpendicularPointDistance/Math.cos(leftStartAngle+moveDistance));
 
                 if (isNaN(newAngle)) {
-                    precision *= -1;
+                    leftPrecision *= -1;
                     continue;
                 }
 
@@ -159,15 +167,54 @@ class Plotter
             // console.log(i, leftLength, distanceAlongMoveLine);
 
         }
+        
+        let rightPrecision = precision;
+
+        if (rightStartPointDistance > rightPerpendicularPointDistance && rightEndPointDistance > rightPerpendicularPointDistance) {
+            rightPrecision *= -1;
+        } else if (rightStartPointDistance > rightEndPointDistance) {
+            rightPrecision *= -1;
+        } else {
+            rightPrecision *= 1;
+        }
+
+        let rightLength = Math.round(rightStartPointDistance);
+        for (let i=0; i<100; i++) {
+            let distanceAlongMoveLine;
+            rightLength += rightPrecision;
+
+            if (rightPerpendicularPointDistance === 0) {
+                distanceAlongMoveLine = rightLength;
+            } else {
+                let newAngle = Math.acos(rightPerpendicularPointDistance/rightLength);
+                distanceAlongMoveLine = Math.sin(newAngle) * rightPerpendicularPointDistance;
+                // rightLength = (rightPerpendicularPointDistance/Math.cos(rightStartAngle+moveDistance));
+
+                if (isNaN(newAngle)) {
+                    rightPrecision *= -1;
+                    continue;
+                }
+
+                console.log(i, rightLength, newAngle, distanceAlongMoveLine);
+
+                if (rightStartAngle > rightEndAngle) {
+                    if (newAngle <= rightEndAngle) break;
+                } else {
+                    if (newAngle >= rightEndAngle) break;
+                }
+            }
+
+
+        }
 
 
         // const precision = 1;
 
         // const leftSingleStepAngle = Math.acos(leftPerpendicularPointDistance/(leftStartPointDistance-precision));
-        // const rightSingleStepAngle = Math.acos(rightMinPointDistance/(rightDistanceToStartPoint-precision));
+        // const rightSingleStepAngle = Math.acos(rightPerpendicularPointDistance/(rightStartPointDistance-precision));
 
         // console.log(leftStartPointDistance, leftSingleStepAngle);
-        // console.log(rightDistanceToStartPoint, rightSingleStepAngle);
+        // console.log(rightStartPointDistance, rightSingleStepAngle);
 
 
         // const minStep = 1;
@@ -175,7 +222,7 @@ class Plotter
         //
         // for (i=0;i<1; i+=0.001) {
         //     const leftNewLength = (leftPerpendicularPointDistance/Math.cos(leftStartAngle+i));
-        //     const rightNewLength = (rightMinPointDistance/Math.cos(rightStartAngle+i));
+        //     const rightNewLength = (rightPerpendicularPointDistance/Math.cos(rightStartAngle+i));
         //
         //     if (typeof lastLength === 'undefined') {
         //         lastLength = leftNewLength;
@@ -230,7 +277,7 @@ class Plotter
         //     //     x: (Math.abs(drawLineXDelta)/2) + Math.min(drawLine[0].x, drawLine[1].x),
         //     //     y: (Math.abs(drawLineYDelta)/2) + Math.min(drawLine[0].y, drawLine[1].y),
         //     // },
-        //     drawLineMinRightPoint
+        //     rightPerpendicularPoint
         // ];
         //
         // const rightMotorToCentreOfDrawLineXDelta = rightMotorToCentreOfDrawLine[0].x - rightMotorToCentreOfDrawLine[1].x;

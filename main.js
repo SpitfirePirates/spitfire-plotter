@@ -13,9 +13,9 @@ async function run () {
     //     setTimeout(resolve, 3000);
     // })
 
-    await plotter.move(50,300);
+    await plotter.move(500,3000);
     console.log(111)
-    await plotter.move(150,-250);
+    await plotter.move(4500,-2500);
 }
 
 run()
