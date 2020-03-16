@@ -13,7 +13,7 @@ async function run () {
         setTimeout(resolve, 3000);
     })
 
-    await plotter.move(500, 1800);
+    await plotter.move(400, 1800);
 
     // await plotter.move(1000,0);
     // await plotter.move(0,1000);

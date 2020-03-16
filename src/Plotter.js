@@ -57,28 +57,30 @@ class Plotter
         const absx = this.position.x + x
         const absy = this.position.y + y
 
-        const drawLineSpeed = 5; //units / second
+        const drawLineSpeed = 0.2; //units / second
 
         const drawLine = [
             {x: this.position.x, y: this.position.y},
             {x: this.position.x+x, y: this.position.y+y},
         ]
 
-        const drawLineXDelta = drawLine[1].x - drawLine[0].x;
-        const drawLineYDelta = drawLine[1].y - drawLine[0].y;
+        const drawLineXDelta = drawLine[0].x - drawLine[1].x;
+        const drawLineYDelta = drawLine[0].y - drawLine[1].y;
         const drawLineLength = Math.sqrt(Math.pow(drawLineXDelta,2) + Math.pow(drawLineYDelta, 2));
 
         let drawLineLeftSlope = drawLineYDelta / drawLineXDelta;
         if (drawLineXDelta === 0) {
             drawLineLeftSlope = 0;
+            // drawLineLeftYIntersect = drawLine[0].y;
         }
-        const drawLineLeftYIntersect = drawLine[1].y - (drawLineLeftSlope * drawLine[1].x);
+        let drawLineLeftYIntersect = drawLine[1].y - (drawLineLeftSlope * drawLine[1].x);
 
         let drawLineRightSlope = - drawLineYDelta / drawLineXDelta;
         if (drawLineXDelta === 0) {
             drawLineRightSlope = 0;
+            // drawLineRightYIntersect = drawLine[0].y;
         }
-        const drawLineRightYIntersect = drawLine[1].y - (drawLineRightSlope * (this.board.width - drawLine[1].x));
+        let drawLineRightYIntersect = drawLine[1].y - (drawLineRightSlope * (this.board.width - drawLine[1].x));
 
 
         const leftPerpendicularPoint = {
@@ -111,6 +113,9 @@ class Plotter
         console.log('anglesR', rightStartAngle, rightEndAngle)
         console.log('anglesL', leftStartAngle, leftEndAngle)
         console.log('R perp point', rightPerpendicularPoint);
+        console.log('L perp point', leftPerpendicularPoint);
+        console.log('L line', drawLineLeftSlope, drawLineLeftYIntersect)
+        console.log('R line', drawLineRightSlope, drawLineRightYIntersect)
 
         let precision = 1;
 
@@ -229,6 +234,27 @@ class Plotter
                     distanceAlongMoveLine = Math.tan(newAngle) * rightPerpendicularPointDistance;
 
                     if (isNaN(newAngle)) {
+
+
+                        const moveDelta = Math.abs(currentDistanceAlongDrawLine*2);
+                        rightTotalDistance += Math.abs(moveDelta);
+                        const time = (totalTime/drawLineLength) * moveDelta;
+                        rightTotalTime += time;
+                        const timer = new NanoTimer();
+                        // console.log('R', `${rightLength}/${rightEndPointDistance}`, moveDelta, time);
+
+                        await new Promise(resolve1 => {
+                            timer.setTimeout(
+                                async _ => {
+
+                                    resolve1();
+                                },
+                                [],
+                                `${time}m`
+                            );
+                        })
+
+
                         rightPrecision *= -1;
                         continue;
                     }
@@ -252,7 +278,7 @@ class Plotter
                 const time = (totalTime/drawLineLength) * moveDelta;
                 rightTotalTime += time;
                 const timer = new NanoTimer();
-                console.log(distanceAlongMoveLine);
+                // console.log('R', `${rightLength}/${rightEndPointDistance}`, moveDelta, time);
 
                 await new Promise(resolve1 => {
                     timer.setTimeout(
