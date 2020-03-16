@@ -7,11 +7,21 @@ class LeftMotor extends Motor {
     }
 
     reelIn(steps, speed) {
-        return this.step(steps, 'forward', speed, -1)
+        return new Promise(resolve => {
+            for (let i = 0; i< steps; i++) {
+                this.stepOnce('forward', -1)
+            }
+            resolve();
+        })
     }
 
     reelOut(steps, speed) {
-        return this.step(steps, 'reverse', speed, 1)
+        return new Promise(resolve => {
+            for (let i = 0; i< steps; i++) {
+                this.stepOnce('reverse', 1)
+            }
+            resolve();
+        })
     }
 }
 

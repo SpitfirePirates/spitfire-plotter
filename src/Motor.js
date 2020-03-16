@@ -63,6 +63,15 @@ class Motor {
             resolve();
         });
     }
+
+    stepOnce(direction, incdec) {
+        this.pins.direction.digitalWrite(direction === 'forward' ? 0:1)
+        this.pins.step.trigger(100,1)
+
+        this.length += incdec
+
+        this.stepEventHandlers.forEach(handler => handler(this.length))
+    }
 }
 
 module.exports = Motor

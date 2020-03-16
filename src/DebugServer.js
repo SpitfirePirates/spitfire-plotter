@@ -22,13 +22,13 @@ class DebugServer {
 
         plotter.rightMotor.addStepEventHandler((length) => {
             let position = calcPoint(plotter.leftMotor.length, plotter.rightMotor.length, plotter.board.width);
-            console.log('right', position, plotter.leftMotor.length, plotter.rightMotor.length);
+            // console.log('right', position, plotter.leftMotor.length, plotter.rightMotor.length);
             this.pointHistory.push(Object.assign({}, position))
         })
 
         plotter.leftMotor.addStepEventHandler((length) => {
             let position = calcPoint(plotter.leftMotor.length, plotter.rightMotor.length, plotter.board.width);
-            console.log('left', position, plotter.leftMotor.length, plotter.rightMotor.length);
+            // console.log('left', position, plotter.leftMotor.length, plotter.rightMotor.length);
             this.pointHistory.push(Object.assign({}, position))
         })
 
